@@ -29,7 +29,7 @@ public class Maze {
         File file = new File(fileName);
 
         int w = 0;
-        int h;
+        int h = 0;
 
         ArrayList<GameObject> gameObjects = new ArrayList<>();
 
@@ -38,7 +38,7 @@ public class Maze {
             String text;
             while((text =  input.readLine()) != null) {
                 for(int i = 0; i < text.length(); i++) {
-                    if(text.getCharAt(i) == '#')
+                    if(text.charAt(i) == '#')
                         gameObjects.add(new Wall(w, i));
                 }
 
@@ -46,12 +46,11 @@ public class Maze {
                 w++;
                                     
             }
-            System.out.println(w + " " + h);
         } catch(IOException io) {
             System.err.println("File error");
         }
 
-        return new Maze(0, 0);
+        return new Maze(w, h);
     }
 
 }
