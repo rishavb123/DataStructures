@@ -25,7 +25,7 @@ public class Main
                     int j = 0;
                     int direction = 0;
                     while(true) {
-                        arr[i][j] = '_';
+                        arr[i][j] = '-';
                         if(!shouldGo(arr, direction, i, j)) {
                             direction++;
                             if(!shouldGo(arr, direction, i, j)) {
@@ -75,31 +75,31 @@ public class Main
             {i + 1, j}
         };
 
-        for(int k = 0; k < positions.length; k++){
-            if(k != direction % 4 && isFilled(positions[k], arr))
-                return false;
-        }
+        // for(int k = 0; k < positions.length; k++){
+        //     if(k != direction % 4 && isFilled(positions[k], arr))
+        //         return false;
+        // }
 
-        if(i < 0 || i >= arr.length || j < 0 || j >= arr[i].length || arr[i][j] == '_') {
+        if(i < 0 || i >= arr.length || j < 0 || j >= arr[i].length || arr[i][j] == '-') {
             direction++;
         }
         a = move(arr, a[0], a[1], direction);
         i = a[0];
         j = a[1];
-        return !(i < 0 || i >= arr.length || j < 0 || j >= arr[i].length || arr[i][j] == '_');            
+        return !(i < 0 || i >= arr.length || j < 0 || j >= arr[i].length || arr[i][j] == '-');            
     }
 
     public static boolean isFilled(int[] position, char[][] arr) {
         if(position[0] < 0 || position[1] < 0 || position[0] >= arr.length || position[1] >= arr.length)
             return false;
-        return arr[position[0]][position[1]] == '_';
+        return arr[position[0]][position[1]] == '-';
     }
 
     public static void printArr(char[][] arr) {
         // System.out.println(arr.length);
         for(int i = 0; i < arr.length; i++) {
             for(int j = 0; j < arr[i].length; j++) {
-                System.out.print(arr[i][j] + "\t");           
+                System.out.print(arr[i][j]);           
             }
             System.out.println();
         }

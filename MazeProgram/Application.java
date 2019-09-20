@@ -15,6 +15,8 @@ public class Application extends JPanel {
 
     private JFrame frame;
 
+    private Maze maze;
+
     public Application() {
         frame = new JFrame();
 
@@ -26,20 +28,34 @@ public class Application extends JPanel {
         frame.addKeyListener(new KeyListener() {
 
             public void keyPressed(KeyEvent event) {
-                System.out.println("Pressed!");
+                // System.out.println("Pressed: " + event.getKeyCode());
             }
 
             public void keyReleased(KeyEvent event) {
-                System.out.println("Released");
+                System.out.println("Released: " + event.getKeyCode());
+                switch(event.getKeyCode()) {
+                    case 38:
+                        maze.getExplorer().move();
+                        break;
+                    case 37:
+                        maze.getExplorer().turnLeft();
+                        break;
+                    case 39:
+                        maze.getExplorer().turnRight();
+                        break;
+                }
+                repaint();
+                if(maze.isDone())
+                    System.out.println("Great Job ur done!");
             }
 
             public void keyTyped(KeyEvent event) {
-                System.out.println("Typed");
+                // System.out.println("Typed: " + event.getKeyCode());
             }
 
         });
 
-        Maze maze = Maze.fromFile(fileName);
+        setBoard();
     }
 
     public void paintComponent(Graphics g) {
@@ -48,10 +64,13 @@ public class Application extends JPanel {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, screenWidth, screenHeight);
 
+        g.setColor(Color.WHITE);
+        maze.draw(g);
+        
     }
 
     public void setBoard() {
-
+        maze = Maze.fromFile(fileName);
     }
 
     public static void main(String[] args) {

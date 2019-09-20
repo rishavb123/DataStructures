@@ -10,6 +10,8 @@ public class Wall extends GameObject{
     }
 
     public void draw(Graphics g) {
+        int x = location.getX();
+        int y = location.getY();
         g.drawRect(x * width, y * height, width, height);
     }
 
