@@ -1,1 +1,2 @@
 rjava Application
+del *.class

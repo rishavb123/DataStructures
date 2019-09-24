@@ -14,8 +14,6 @@ public class Maze {
     private Location endPos;
 
     public Maze(int w, int h) {
-        Wall.width = Application.screenWidth / w;
-        Wall.height = Application.screenHeight / h;
 
         gameObjects = new GameObject[w][h];
 
@@ -29,8 +27,9 @@ public class Maze {
         int w = gameObjects.length;
         int h = gameObjects[0].length;
         
-        Wall.width = Application.screenWidth / w;
-        Wall.height = Application.screenHeight / h;
+        System.out.println(Application.screenWidth);
+        Wall.width = Application.screenWidth / w > 30? 30 : Application.screenWidth / w;
+        Wall.height = Application.screenHeight / h > 30? 30 : Application.screenHeight / h;
 
         this.gameObjects = gameObjects;
         explorer = (Explorer) gameObjects[explorerX][explorerY];
@@ -112,6 +111,10 @@ public class Maze {
             for(int y = 0; y <  getHeight(); y++)
                 if(get(x, y) != null)
                     get(x, y).draw(g);
+    }
+
+    public void draw3d(Graphics g) {
+        
     }
 
     public boolean isDone() {

@@ -1,4 +1,5 @@
 import java.awt.Graphics;
+import java.awt.Color;
 
 public class Wall extends GameObject{
 
@@ -9,9 +10,13 @@ public class Wall extends GameObject{
         super(x, y);
     }
 
+    @Override
     public void draw(Graphics g) {
         int x = location.getX();
         int y = location.getY();
+        g.setColor(Color.GRAY);
+        g.fillRect(x * width, y * height, width, height);
+        g.setColor(Color.WHITE);
         g.drawRect(x * width, y * height, width, height);
     }
 

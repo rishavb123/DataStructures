@@ -22,20 +22,40 @@ public class Application extends JPanel {
 
         frame.add(this);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1000, 800);
+        frame.setSize(screenWidth, screenHeight);
+        setBoard();
         frame.setVisible(true);
 
         frame.addKeyListener(new KeyListener() {
 
+            @Override
             public void keyPressed(KeyEvent event) {
                 // System.out.println("Pressed: " + event.getKeyCode());
+                switch(event.getKeyCode()) {
+                    case 38:
+                        maze.getExplorer().move();
+                        break;
+                    case 37:
+                        // maze.getExplorer().turnLeft();
+                        break;
+                    case 39:
+                        // maze.getExplorer().turnRight();
+                        break;
+                    case 40:
+                        maze.getExplorer().moveBack();
+                        break;
+                }
+                repaint();
+                if(maze.isDone())
+                    System.out.println("Great Job ur done!");
             }
 
+            @Override
             public void keyReleased(KeyEvent event) {
                 System.out.println("Released: " + event.getKeyCode());
                 switch(event.getKeyCode()) {
                     case 38:
-                        maze.getExplorer().move();
+                        // maze.getExplorer().move();
                         break;
                     case 37:
                         maze.getExplorer().turnLeft();
@@ -49,13 +69,12 @@ public class Application extends JPanel {
                     System.out.println("Great Job ur done!");
             }
 
+            @Override
             public void keyTyped(KeyEvent event) {
                 // System.out.println("Typed: " + event.getKeyCode());
             }
 
         });
-
-        setBoard();
     }
 
     public void paintComponent(Graphics g) {
@@ -64,8 +83,12 @@ public class Application extends JPanel {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, screenWidth, screenHeight);
 
-        g.setColor(Color.WHITE);
-        maze.draw(g);
+        if(maze.isDone()) {
+            g.setColor(Color.WHITE);
+            g.drawString("Rishav is cool not", 20, 20);
+        }
+        else
+            maze.draw(g);
         
     }
 

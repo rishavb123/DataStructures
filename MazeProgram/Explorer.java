@@ -1,4 +1,5 @@
 import java.awt.Graphics;
+import java.awt.Color;
 
 public class Explorer extends GameObject {
 
@@ -15,7 +16,21 @@ public class Explorer extends GameObject {
         direction = RIGHT;
     }
 
-    public void move() {
+    public static int flip(int direction) {
+        switch(direction) {
+            case UP:
+                return DOWN;
+            case DOWN:
+                return UP;
+            case RIGHT:
+                return LEFT;
+            case LEFT:
+                return RIGHT;
+        }
+        return -1;
+    }
+
+    public Location nextLocation(int direction) {
         Location nextLoc = new Location(location.getX(), location.getY());        
         switch(direction) {
             case LEFT:
@@ -31,6 +46,20 @@ public class Explorer extends GameObject {
                 nextLoc.setY(nextLoc.getY() + 1);
                 break;
         }
+        return nextLoc;
+    }
+
+    public void move() {
+        Location nextLoc = nextLocation(direction);
+        if(nextLoc.getX() >= 0 && nextLoc.getX() < maze.getWidth() && nextLoc.getY() >= 0 && nextLoc.getY() < maze.getHeight() && maze.get(nextLoc) == null) {
+            maze.set(location, null);
+            maze.set(nextLoc, this);
+            location = nextLoc;
+        }
+    }
+
+    public void moveBack() {
+        Location nextLoc = nextLocation(flip(direction));
         if(nextLoc.getX() >= 0 && nextLoc.getX() < maze.getWidth() && nextLoc.getY() >= 0 && nextLoc.getY() < maze.getHeight() && maze.get(nextLoc) == null) {
             maze.set(location, null);
             maze.set(nextLoc, this);
@@ -47,9 +76,10 @@ public class Explorer extends GameObject {
     }
 
     public void draw(Graphics g) {
+        g.setColor(Color.RED);
         int x = location.getX();
         int y = location.getY();
-        g.drawOval(x * Wall.width, y * Wall.height, Wall.width, Wall.height);
+        g.fillOval(x * Wall.width + (int)(0.05 * Wall.width), y * Wall.height + (int)(0.05 * Wall.height), (int)(0.9 * Wall.width), (int)(0.9 * Wall.height));
     }
 
     public void setMaze(Maze maze) {
