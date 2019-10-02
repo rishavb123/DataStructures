@@ -129,11 +129,12 @@ class Chord {
     }
 
     public int[] getNoteForColumn(int i) {
-        if(arr[0].charAt(i) == 'x')
+        int j;
+        if(arr[0].charAt(i) == 'o')
+            return getNote(i, 0);
+        if(arr[0].charAt(i) == 'x' || (j = getColumn(i).indexOf('*')) == -1)
             return null;
-        String str = getColumn(i);
-        int j = str.indexOf('*');
-        return getNote(i, j == -1? 0 : j);
+        return getNote(i, j);
     }
 
     public String getColumn(int i) {

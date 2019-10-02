@@ -48,6 +48,25 @@ public class Explorer extends GameObject {
         }
         return nextLoc;
     }
+    
+    public static Location nextLocation(int direction, Location location) {
+        Location nextLoc = new Location(location.getX(), location.getY());        
+        switch(direction) {
+            case LEFT:
+                nextLoc.setX(nextLoc.getX() - 1);
+                break;
+            case RIGHT:
+                nextLoc.setX(nextLoc.getX() + 1);
+                break;
+            case UP:
+                nextLoc.setY(nextLoc.getY() - 1);
+                break;
+            case DOWN:
+                nextLoc.setY(nextLoc.getY() + 1);
+                break;
+        }
+        return nextLoc;
+    }
 
     public void move() {
         Location nextLoc = nextLocation(direction);
@@ -75,6 +94,14 @@ public class Explorer extends GameObject {
         direction = (direction + 1) % 4;
     }
 
+    public static int turnLeft(int direction) {
+        return direction == 0? DOWN: direction - 1;
+    }
+
+    public static int turnRight(int direction) {
+        return (direction + 1) % 4;
+    }
+
     public void draw(Graphics g) {
         g.setColor(Color.RED);
         int x = location.getX();
@@ -84,6 +111,10 @@ public class Explorer extends GameObject {
 
     public void setMaze(Maze maze) {
         this.maze = maze;
+    }
+    
+    public int getDirection() {
+        return direction;
     }
 
 }

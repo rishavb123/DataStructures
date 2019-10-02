@@ -6,6 +6,9 @@ public class Wall extends GameObject{
     public static int width;
     public static int height;
 
+    public static int width3d = Application.screenWidth / 3;
+    public static int height3d = Application.screenHeight;
+
     public Wall(int x, int y) {
         super(x, y);
     }

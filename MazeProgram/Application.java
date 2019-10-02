@@ -9,7 +9,7 @@ public class Application extends JPanel {
 
     public static final String fileName = "./mazes/one.txt";
     public static final int screenWidth = 1000;
-    public static final int screenHeight = 800;
+    public static final int screenHeight = 700;
 
     private static final long serialVersionUID = 1L;
 
@@ -17,12 +17,14 @@ public class Application extends JPanel {
 
     private Maze maze;
 
+    private boolean show3d = true;
+
     public Application() {
         frame = new JFrame();
 
         frame.add(this);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(screenWidth, screenHeight);
+        frame.setSize(screenWidth*5/4, screenHeight*5/4);
         setBoard();
         frame.setVisible(true);
 
@@ -63,6 +65,9 @@ public class Application extends JPanel {
                     case 39:
                         maze.getExplorer().turnRight();
                         break;
+                    case 32:
+                        show3d = !show3d;
+                        break;
                 }
                 repaint();
                 if(maze.isDone())
@@ -87,8 +92,11 @@ public class Application extends JPanel {
             g.setColor(Color.WHITE);
             g.drawString("Rishav is cool not", 20, 20);
         }
-        else
+        else {
             maze.draw(g);
+            if(show3d)
+                maze.draw3d(g);
+        }
         
     }
 
