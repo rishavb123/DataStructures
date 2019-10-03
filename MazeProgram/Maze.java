@@ -18,6 +18,7 @@ public class Maze {
     public static final int hMargin3d = (int) (0.05 * Application.screenHeight);
     public static final int screenWidth3d = Application.screenWidth - 2 * wMargin3d;
     public static final int screenHeight3d = Application.screenHeight - 2 * hMargin3d;
+    public static final Wall tempWall = new Wall(0, 0);
 
     public Maze(int w, int h) {
 
@@ -60,9 +61,17 @@ public class Maze {
     }
 
     public GameObject get(int x, int y) {
-        if(x >= getWidth() || x < 0 || y >= getHeight() || y < 0)
-            return null;
+        if(!isValid(x, y))
+            return tempWall;
         return gameObjects[x][y];
+    }
+
+    public boolean isValid(int x, int y) {
+        return !(x >= getWidth() || x < 0 || y >= getHeight() || y < 0);
+    }
+
+    public boolean isValid(Location loc) {
+        return isValid(loc.getX(), loc.getY());
     }
 
     public GameObject get(Location l) {
@@ -137,7 +146,7 @@ public class Maze {
 
         Location location = explorer.getLocation();
 
-        for(int i = 0; i < 4; i++) {
+        for(int i = 0; i < explorer.getVision(); i++) {
             Location left = Explorer.nextLocation(Explorer.turnLeft(explorer.getDirection()), location);
             Location right = Explorer.nextLocation(Explorer.turnRight(explorer.getDirection()), location);
 
@@ -146,21 +155,58 @@ public class Maze {
             int nx = x + nw;
             int ny = y + (int)((1 - rh) / 2.0 * nh);
             int ny2 = y + (int)(((1 - rh) / 2.0 + 1) * nh);
-
-            g.setColor(Color.GRAY);
             
             location = Explorer.nextLocation(explorer.getDirection(), location);
 
-            if(get(location) instanceof Wall) {
-                g.fillPolygon(new int[]{nx, nx, flipX(nx), flipX(nx)}, new int[]{ny, ny2, ny2, ny}, 4);
-                // break;
+            if(get(left) instanceof Wall) {
+                int[] xs = new int[]{x, nx, nx, x};
+                int[] ys = new int[]{y, ny, ny2, y2};
+                g.setColor(Color.GRAY);
+                g.fillPolygon(xs, ys, 4);
+                g.setColor(Color.RED);
+                g.drawPolygon(xs, ys, 4);
+            } else if(get(Explorer.nextLocation(explorer.getDirection(), left)) instanceof Wall){
+                int[] xs = new int[]{x, nx, nx, x};
+                int[] ys = new int[]{ny, ny, ny2, ny2};
+                g.setColor(Color.GRAY);
+                g.fillPolygon(xs, ys, 4);
+                g.setColor(Color.RED);
+                g.drawPolygon(xs, ys, 4);
             }
 
-            if(get(left) instanceof Wall)
-                g.drawPolygon(new int[]{x, nx, nx, x}, new int[]{y, ny, ny2, y2}, 4);
-            if(get(right) instanceof Wall)
-                g.drawPolygon(flipX(new int[]{x, nx, nx, x}), new int[]{y, ny, ny2, y2}, 4);
+            if(get(right) instanceof Wall) {
+                int[] xs = flipX(new int[]{x, nx, nx, x});
+                int[] ys = new int[]{y, ny, ny2, y2};
+                g.setColor(Color.GRAY);
+                g.fillPolygon(xs, ys, 4);
+                g.setColor(Color.RED);
+                g.drawPolygon(xs, ys, 4);
+            } else if(get(Explorer.nextLocation(explorer.getDirection(), right)) instanceof Wall){
+                int[] xs = flipX(new int[]{x, nx, nx, x});
+                int[] ys = new int[]{ny, ny, ny2, ny2};
+                g.setColor(Color.GRAY);
+                g.fillPolygon(xs, ys, 4);
+                g.setColor(Color.RED);
+                g.drawPolygon(xs, ys, 4);
+            }
 
+            if(get(location) instanceof Wall) {
+                int[] xs = new int[]{nx, nx, flipX(nx), flipX(nx)};
+                int[] ys = new int[]{ny, ny2, ny2, ny};
+                g.setColor(Color.GRAY);
+                g.fillPolygon(xs, ys, 4);
+                g.setColor(Color.RED);
+                g.drawPolygon(xs, ys, 4);
+                break;
+            } else if(location.equals(endPos)) {
+                int[] xs = new int[]{nx, nx, flipX(nx), flipX(nx)};
+                int[] ys = new int[]{ny, ny2, ny2, ny};
+                g.setColor(Color.GREEN);
+                g.fillPolygon(xs, ys, 4);
+                g.setColor(Color.RED);
+                g.drawPolygon(xs, ys, 4);
+                break;
+            }
             
             
             x = nx; y = ny; y2 = ny2; w = nw; h = nh;

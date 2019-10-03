@@ -11,6 +11,8 @@ public class Explorer extends GameObject {
     private int direction;
     private Maze maze;
 
+    private int vision = 4;
+
     public Explorer(int x, int y) {
         super(x, y);
         direction = RIGHT;
@@ -115,6 +117,20 @@ public class Explorer extends GameObject {
     
     public int getDirection() {
         return direction;
+    }
+
+    /**
+     * @return the vision
+     */
+    public int getVision() {
+        return vision;
+    }
+
+    /**
+     * @param vision the vision to set
+     */
+    public void setVision(int vision) {
+        this.vision = vision;
     }
 
 }
