@@ -11,7 +11,7 @@ public class Explorer extends GameObject {
     private int direction;
     private Maze maze;
 
-    private int vision = 4;
+    private int vision = 5;
 
     public Explorer(int x, int y) {
         super(x, y);

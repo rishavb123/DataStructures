@@ -132,7 +132,7 @@ public class Maze {
 
     public void draw3d(Graphics g) {
 
-        g.setColor(Color.WHITE);
+        g.setColor(Color.MAGENTA);
         g.fillRect(wMargin3d, hMargin3d, screenWidth3d, screenHeight3d);
 
         int x = wMargin3d;
@@ -206,6 +206,13 @@ public class Maze {
                 g.setColor(Color.RED);
                 g.drawPolygon(xs, ys, 4);
                 break;
+            }
+
+            if(i == explorer.getVision() - 1) {
+                int[] xs = new int[]{nx, nx, flipX(nx), flipX(nx)};
+                int[] ys = new int[]{ny, ny2, ny2, ny};
+                g.setColor(Color.BLACK);
+                g.fillPolygon(xs, ys, 4);
             }
             
             
