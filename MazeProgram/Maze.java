@@ -20,6 +20,11 @@ public class Maze {
     public static final int screenHeight3d = Application.screenHeight - 2 * hMargin3d;
     public static final Wall tempWall = new Wall(0, 0);
 
+    public static final Color floorColor = Color.BLUE;
+    public static final Color ceilingColor = Color.WHITE;
+    public static final Color wallColor = Color.GRAY;
+    public static final Color lineColor = Color.BLACK;
+
     public Maze(int w, int h) {
 
         gameObjects = new GameObject[w][h];
@@ -58,6 +63,10 @@ public class Maze {
 
     public int getHeight() {
         return gameObjects[0].length;
+    }
+
+    public Color applyFilter(Color orig, int dist) {
+        return new Color((int)(orig.getRed() * (1 - (double) dist / explorer.getVision())), (int)(orig.getGreen() * (1 - (double) dist / explorer.getVision())), (int)(orig.getBlue() * (1 - (double)dist / explorer.getVision())));
     }
 
     public GameObject get(int x, int y) {
@@ -132,7 +141,7 @@ public class Maze {
 
     public void draw3d(Graphics g) {
 
-        g.setColor(Color.MAGENTA);
+        g.setColor(lineColor);
         g.fillRect(wMargin3d, hMargin3d, screenWidth3d, screenHeight3d);
 
         int x = wMargin3d;
@@ -158,44 +167,176 @@ public class Maze {
             
             location = Explorer.nextLocation(explorer.getDirection(), location);
 
+            int[] xc = new int[]{x, nx, flipX(nx), flipX(x)};
+            int[] yc = new int[]{y2, ny2, ny2, y2};
+            g.setColor(applyFilter(floorColor, i));
+            g.fillPolygon(xc, yc, 4);
+            g.setColor(lineColor);
+            g.drawPolygon(xc, yc, 4);
+
+            int[] xf = new int[]{x, nx, flipX(nx), flipX(x)};
+            int[] yf = new int[]{y, ny, ny, y};
+            g.setColor(applyFilter(ceilingColor, i));
+            g.fillPolygon(xf, yf, 4);
+            g.setColor(lineColor);
+            g.drawPolygon(xf, yf, 4);
+
             if(get(left) instanceof Wall) {
                 int[] xs = new int[]{x, nx, nx, x};
                 int[] ys = new int[]{y, ny, ny2, y2};
-                g.setColor(Color.GRAY);
+                g.setColor(applyFilter(wallColor, i));
                 g.fillPolygon(xs, ys, 4);
-                g.setColor(Color.RED);
+                g.setColor(lineColor);
                 g.drawPolygon(xs, ys, 4);
-            } else if(get(Explorer.nextLocation(explorer.getDirection(), left)) instanceof Wall){
-                int[] xs = new int[]{x, nx, nx, x};
-                int[] ys = new int[]{ny, ny, ny2, ny2};
-                g.setColor(Color.GRAY);
-                g.fillPolygon(xs, ys, 4);
-                g.setColor(Color.RED);
-                g.drawPolygon(xs, ys, 4);
+            } else {
+
+                int[] xwfc = new int[]{x, x, nx};
+                int[] ywc = new int[]{y, ny, ny};
+                int[] ywf = new int[]{y2, ny2, ny2};
+
+                g.setColor(lineColor);
+                g.drawPolygon(xwfc, ywc, 3);
+                g.setColor(applyFilter(ceilingColor, i));
+                g.fillPolygon(xwfc, ywc, 3);
+
+                g.setColor(lineColor);
+                g.drawPolygon(xwfc, ywf, 3);
+                g.setColor(applyFilter(floorColor, i));
+                g.fillPolygon(xwfc, ywf, 3);
+
+                if(get(Explorer.nextLocation(explorer.getDirection(), left)) instanceof Wall){
+                    int[] xs = new int[]{x, nx, nx, x};
+                    int[] ys = new int[]{ny, ny, ny2, ny2};
+                    g.setColor(applyFilter(wallColor, i));
+                    g.fillPolygon(xs, ys, 4);
+                    g.setColor(lineColor);
+                    g.drawPolygon(xs, ys, 4);
+                } else {
+                    int hh = (h - nh) / 2;
+                    int hw = (w - nw) / 2;
+                    int hy = ny;
+                    int hy2 = ny2;
+                    Location l = Explorer.nextLocation(explorer.getDirection(), left);
+                    for(int j = i + 1; j < explorer.getVision(); j++) {
+                        hh = (int)(hh * rh);
+                        if(get(l) instanceof Wall) {
+                            int[] rectX = new int[]{x, nx, nx, x};
+                            int[] rectY = new int[]{hy, hy, hy2, hy2};
+                            g.setColor(lineColor);
+                            g.drawPolygon(rectX, rectY, 4);
+                            g.setColor(applyFilter(wallColor, j));
+                            g.fillPolygon(rectX, rectY, 4);
+                            break;
+                        } else if(l.equals(endPos)) {
+                            int[] rectX = new int[]{x, nx, nx, x};
+                            int[] rectY = new int[]{hy, hy, hy2, hy2};
+                            g.setColor(lineColor);
+                            g.drawPolygon(rectX, rectY, 4);
+                            g.setColor(Color.GREEN);
+                            g.fillPolygon(rectX, rectY, 4);
+                            break;
+                        } else
+                            l = Explorer.nextLocation(explorer.getDirection(), l);
+                            
+                        int[] xs = new int[]{x, nx, nx, x};
+                        int[] ys = new int[]{hy2, hy2, hy2 - hh, hy2 - hh};
+                        int[] ys2 = new int[]{hy, hy, hy + hh, hy + hh};
+                        hy2 -= hh;
+                        hy += hh;
+                        g.setColor(lineColor);
+                        g.drawPolygon(xs, ys, 4);
+                        g.drawPolygon(xs, ys2, 4);
+                        g.setColor(applyFilter(floorColor, j));
+                        g.fillPolygon(xs, ys, 4);
+                        g.setColor(applyFilter(ceilingColor, j));
+                        g.fillPolygon(xs, ys2, 4);
+
+                    }
+                }
             }
 
             if(get(right) instanceof Wall) {
                 int[] xs = flipX(new int[]{x, nx, nx, x});
                 int[] ys = new int[]{y, ny, ny2, y2};
-                g.setColor(Color.GRAY);
+                g.setColor(applyFilter(wallColor, i));
                 g.fillPolygon(xs, ys, 4);
-                g.setColor(Color.RED);
+                g.setColor(lineColor);
                 g.drawPolygon(xs, ys, 4);
-            } else if(get(Explorer.nextLocation(explorer.getDirection(), right)) instanceof Wall){
-                int[] xs = flipX(new int[]{x, nx, nx, x});
-                int[] ys = new int[]{ny, ny, ny2, ny2};
-                g.setColor(Color.GRAY);
-                g.fillPolygon(xs, ys, 4);
-                g.setColor(Color.RED);
-                g.drawPolygon(xs, ys, 4);
+            } else {
+
+                int[] xwfc = new int[]{flipX(x), flipX(x), flipX(nx)};
+                int[] ywc = new int[]{y, ny, ny};
+                int[] ywf = new int[]{y2, ny2, ny2};
+
+                g.setColor(lineColor);
+                g.drawPolygon(xwfc, ywc, 3);
+                g.setColor(applyFilter(ceilingColor, i));
+                g.fillPolygon(xwfc, ywc, 3);
+
+                g.setColor(lineColor);
+                g.drawPolygon(xwfc, ywf, 3);
+                g.setColor(applyFilter(floorColor, i));
+                g.fillPolygon(xwfc, ywf, 3);
+
+                if(get(Explorer.nextLocation(explorer.getDirection(), right)) instanceof Wall){
+                    int[] xs = flipX(new int[]{x, nx, nx, x});
+                    int[] ys = new int[]{ny, ny, ny2, ny2};
+                    g.setColor(applyFilter(wallColor, i));
+                    g.fillPolygon(xs, ys, 4);
+                    g.setColor(lineColor);
+                    g.drawPolygon(xs, ys, 4);
+                } else {
+                    int hh = (h - nh) / 2;
+                    int hw = (w - nw) / 2;
+                    int hy = ny;
+                    int hy2 = ny2;
+                    Location l = Explorer.nextLocation(explorer.getDirection(), right);
+                    for(int j = i + 1; j < explorer.getVision() + 1; j++) {
+                        hh = (int)(hh * rh);
+                        if(get(l) instanceof Wall) {
+                            int[] rectX = flipX(new int[]{x, nx, nx, x});
+                            int[] rectY = new int[]{hy, hy, hy2, hy2};
+                            g.setColor(lineColor);
+                            g.drawPolygon(rectX, rectY, 4);
+                            g.setColor(applyFilter(wallColor, j));
+                            g.fillPolygon(rectX, rectY, 4);
+                            break;
+                        } else if(l.equals(endPos)) {
+                            int[] rectX = flipX(new int[]{x, nx, nx, x});
+                            int[] rectY = new int[]{hy, hy, hy2, hy2};
+                            g.setColor(lineColor);
+                            g.drawPolygon(rectX, rectY, 4);
+                            g.setColor(Color.GREEN);
+                            g.fillPolygon(rectX, rectY, 4);
+                            break;
+                        } else
+                            l = Explorer.nextLocation(explorer.getDirection(), l);
+                                                        
+                        System.out.println(hh);
+                        int[] xs = flipX(new int[]{x, nx, nx, x});
+                        int[] ys = new int[]{hy2, hy2, hy2 - hh, hy2 - hh};
+                        int[] ys2 = new int[]{hy, hy, hy + hh, hy + hh};
+                        hy2 -= hh;
+                        hy += hh;
+                        g.setColor(lineColor);
+                        g.drawPolygon(xs, ys, 4);
+                        g.drawPolygon(xs, ys2, 4);
+                        g.setColor(applyFilter(floorColor, j));
+                        g.fillPolygon(xs, ys, 4);
+                        g.setColor(applyFilter(ceilingColor, j));
+                        g.fillPolygon(xs, ys2, 4);
+
+
+                    }
+                }
             }
 
             if(get(location) instanceof Wall) {
                 int[] xs = new int[]{nx, nx, flipX(nx), flipX(nx)};
                 int[] ys = new int[]{ny, ny2, ny2, ny};
-                g.setColor(Color.GRAY);
+                g.setColor(applyFilter(wallColor, i));
                 g.fillPolygon(xs, ys, 4);
-                g.setColor(Color.RED);
+                g.setColor(lineColor);
                 g.drawPolygon(xs, ys, 4);
                 break;
             } else if(location.equals(endPos)) {
@@ -203,7 +344,7 @@ public class Maze {
                 int[] ys = new int[]{ny, ny2, ny2, ny};
                 g.setColor(Color.GREEN);
                 g.fillPolygon(xs, ys, 4);
-                g.setColor(Color.RED);
+                g.setColor(lineColor);
                 g.drawPolygon(xs, ys, 4);
                 break;
             }
@@ -211,7 +352,7 @@ public class Maze {
             if(i == explorer.getVision() - 1) {
                 int[] xs = new int[]{nx, nx, flipX(nx), flipX(nx)};
                 int[] ys = new int[]{ny, ny2, ny2, ny};
-                g.setColor(Color.BLACK);
+                g.setColor(lineColor);
                 g.fillPolygon(xs, ys, 4);
             }
             
@@ -220,6 +361,10 @@ public class Maze {
 
         }
 
+    }
+
+    public int max(int a, int b) {
+        return a > b? a : b;
     }
 
     public void draw3dTest(Graphics g) {
@@ -231,9 +376,9 @@ public class Maze {
         int[] x = copy(curX);
         int[] y = copy(curY);
         int[] fx = flipX(x);
-        g.setColor(Color.WHITE);
+        g.setColor(ceilingColor);
         g.fillRect(transformX(0), transformY(0), screenWidth3d, screenHeight3d);
-        g.setColor(Color.GRAY);
+        g.setColor(wallColor);
 
         transformPoints(x, y, fx);
         // g.fillPolygon(x, y, 4);
