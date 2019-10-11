@@ -36,6 +36,7 @@ public class Application extends JPanel {
                 switch(event.getKeyCode()) {
                     case 38:
                         maze.getExplorer().move();
+                        maze.flip = !maze.flip;
                         break;
                     case 37:
                         // maze.getExplorer().turnLeft();
@@ -45,6 +46,7 @@ public class Application extends JPanel {
                         break;
                     case 40:
                         maze.getExplorer().moveBack();
+                        maze.flip = !maze.flip;
                         break;
                 }
                 repaint();

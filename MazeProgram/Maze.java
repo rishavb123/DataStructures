@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -6,7 +7,10 @@ import java.util.ArrayList;
 import java.awt.Graphics;
 import java.awt.Color;
 import java.nio.file.Files;
+import java.io.File;
 import java.util.List;
+import javax.imageio.ImageIO;
+import java.awt.Graphics2D;
 
 public class Maze {
 
@@ -24,6 +28,9 @@ public class Maze {
     public static final Color ceilingColor = Color.WHITE;
     public static final Color wallColor = Color.GRAY;
     public static final Color lineColor = Color.BLACK;
+
+    public BufferedImage explorerImage;
+    public boolean flip = false;
 
     public Maze(int w, int h) {
 
@@ -47,6 +54,13 @@ public class Maze {
         explorer = (Explorer) gameObjects[explorerX][explorerY];
         explorer.setMaze(this);
         this.endPos = endPos;
+
+        try {
+            explorerImage = ImageIO.read(new File("./res/guy.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public GameObject[][] getGameObjects() {
@@ -137,6 +151,23 @@ public class Maze {
             for(int y = 0; y <  getHeight(); y++)
                 if(get(x, y) != null)
                     get(x, y).draw(g);
+        g.setColor(Color.WHITE);
+        g.fillOval((int) (0.4 * Application.screenWidth), (int) (0.5 * Application.screenHeight), (int) (0.2 * Application.screenWidth),  (int) (0.2 * Application.screenWidth));
+        g.setColor(Color.RED);
+        switch(explorer.getDirection()) {
+            case Explorer.UP:
+                g.fillOval((int) ((0.5 - 0.005) * Application.screenWidth), (int) (0.5 * Application.screenHeight), (int)(0.01 * Application.screenWidth), (int) (0.1 * Application.screenWidth));
+                break;
+            case Explorer.RIGHT:
+                g.fillOval((int) ((0.5) * Application.screenWidth), (int) (0.5 * Application.screenHeight + 0.1 * Application.screenWidth), (int)(0.1 * Application.screenWidth), (int) (0.01 * Application.screenWidth));
+                break;
+            case Explorer.DOWN:
+                g.fillOval((int) ((0.5 - 0.005) * Application.screenWidth), (int) (0.5 * Application.screenHeight + 0.1 * Application.screenWidth), (int) (.01 * Application.screenWidth), (int) (0.1 * Application.screenWidth));
+                break;
+            case Explorer.LEFT:
+                g.fillOval((int) ((0.4) * Application.screenWidth), (int) (0.5 * Application.screenHeight + 0.1 * Application.screenWidth), (int)(0.1 * Application.screenWidth), (int) (0.01 * Application.screenWidth));
+                break;
+        }
     }
 
     public void draw3d(Graphics g) {
@@ -361,6 +392,10 @@ public class Maze {
 
         }
 
+        Graphics2D g2d = (Graphics2D) g;
+        //HERE
+        g2d.drawImage(explorerImage, (int) (Application.screenWidth + (flip? 1: -1) * 0.9 * explorerImage.getWidth()) / 2, (int) (Application.screenHeight * 0.25), (flip? -1: 1) * (int) (0.9 * explorerImage.getWidth()), (int) (0.9 * explorerImage.getHeight()), null);
+        
     }
 
     public int max(int a, int b) {
@@ -474,6 +509,35 @@ public class Maze {
             s += "\n";
         }
         return s;
+    }
+
+
+    /**
+     * @param gameObjects the gameObjects to set
+     */
+    public void setGameObjects(GameObject[][] gameObjects) {
+        this.gameObjects = gameObjects;
+    }
+
+    /**
+     * @param explorer the explorer to set
+     */
+    public void setExplorer(Explorer explorer) {
+        this.explorer = explorer;
+    }
+
+    /**
+     * @return Location return the endPos
+     */
+    public Location getEndPos() {
+        return endPos;
+    }
+
+    /**
+     * @param endPos the endPos to set
+     */
+    public void setEndPos(Location endPos) {
+        this.endPos = endPos;
     }
 
 }
