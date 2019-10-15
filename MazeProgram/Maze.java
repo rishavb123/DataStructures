@@ -1,13 +1,9 @@
-import java.io.BufferedReader;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.awt.Graphics;
 import java.awt.Color;
 import java.nio.file.Files;
-import java.io.File;
 import java.util.List;
 import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
@@ -135,7 +131,7 @@ public class Maze {
                             explorerX = x;
                             explorerY = y;
                             break;
-                        case 'E':
+                        case '+':
                             endPos = new Location(x, y);
                     }
 
