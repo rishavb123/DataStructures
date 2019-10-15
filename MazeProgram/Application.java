@@ -1,6 +1,7 @@
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.event.KeyListener;
+import java.util.HashMap;
 import java.awt.event.KeyEvent;
 import java.awt.Graphics;
 import java.awt.Color;
@@ -19,7 +20,19 @@ public class Application extends JPanel {
 
     private boolean show3d = true;
 
+    private boolean usingServer = true;
+    private HttpServer server;
+    private static final int PORT = 8000;
+
     public Application() {
+
+        if(usingServer) {
+            HashMap<String, HttpServer.Receiver> receivers = new HashMap<>();
+            receivers.put("test", params -> "Hello, World!");
+            server = new HttpServer(PORT, receivers);
+            server.start();
+        }
+
         frame = new JFrame();
 
         frame.add(this);
