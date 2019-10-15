@@ -42,7 +42,6 @@ public class Maze {
         int w = gameObjects.length;
         int h = gameObjects[0].length;
         
-        System.out.println(Application.screenWidth);
         Wall.width = Application.screenWidth / w > 30? 30 : Application.screenWidth / w;
         Wall.height = Application.screenHeight / h > 30? 30 : Application.screenHeight / h;
 
@@ -126,7 +125,7 @@ public class Maze {
                         case '#':
                             gameObjects[x][y] = new Wall(x, y);
                             break;
-                        case '*':
+                        case 'S':
                             gameObjects[x][y] = new Explorer(x, y);
                             explorerX = x;
                             explorerY = y;
@@ -339,7 +338,6 @@ public class Maze {
                         } else
                             l = Explorer.nextLocation(explorer.getDirection(), l);
                                                         
-                        System.out.println(hh);
                         int[] xs = flipX(new int[]{x, nx, nx, x});
                         int[] ys = new int[]{hy2, hy2, hy2 - hh, hy2 - hh};
                         int[] ys2 = new int[]{hy, hy, hy + hh, hy + hh};
@@ -420,7 +418,6 @@ public class Maze {
             Location nextLocation = Explorer.nextLocation(explorer.getDirection(), location);
             width /= 2;
             if(get(nextLocation) instanceof Wall) {
-                System.out.println("Wall infront");
                 curX = new int[]{curX[2], curX[2], flipX(curX[2]), flipX(curX[2])};
                 curY = new int[]{curY[1], curY[2], curY[2], curY[1]};
                 int[] xc = copy(curX);

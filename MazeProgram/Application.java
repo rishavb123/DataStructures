@@ -28,7 +28,25 @@ public class Application extends JPanel {
 
         if(usingServer) {
             HashMap<String, HttpServer.Receiver> receivers = new HashMap<>();
-            receivers.put("test", params -> "Hello, World!");
+            receivers.put("move", new HttpServer.Receiver(){
+            
+                @Override
+                public String call(String params) {
+                    if(params.equals("front")) {
+                        maze.getExplorer().move();
+                        maze.flip = !maze.flip;
+                    } else if(params.equals("back")) {
+                        maze.getExplorer().moveBack();
+                        maze.flip = !maze.flip;
+                    } else if(params.equals("left")) {
+                        maze.getExplorer().turnLeft();
+                    } else if(params.equals("right")) {
+                        maze.getExplorer().turnRight();
+                    }
+                    repaint();   
+                    return maze.getExplorer().getLocation().getX() + " " + maze.getExplorer().getLocation().getY();
+                }
+            });
             server = new HttpServer(PORT, receivers);
             server.start();
         }
@@ -69,7 +87,7 @@ public class Application extends JPanel {
 
             @Override
             public void keyReleased(KeyEvent event) {
-                System.out.println("Released: " + event.getKeyCode());
+                // System.out.println("Released: " + event.getKeyCode());
                 switch(event.getKeyCode()) {
                     case 38:
                         // maze.getExplorer().move();
@@ -85,8 +103,6 @@ public class Application extends JPanel {
                         break;
                 }
                 repaint();
-                if(maze.isDone())
-                    System.out.println("Great Job ur done!");
             }
 
             @Override

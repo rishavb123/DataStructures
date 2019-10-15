@@ -6,7 +6,10 @@ from constants import *
 from util import *
 from rl import *
 
-grid = Grid.load('./grids/maze2.txt', win_reward=10)
+# file_name = './grids/maze2.txt'
+file_name = '../mazes/one.txt'
+
+grid = Grid.load(file_name, win_reward=10)
 
 print("")
 
