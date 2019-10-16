@@ -100,11 +100,6 @@ while done == 0:
         param = "left"
     elif turn_right(direction) == action:
         param = "right"
-    else:
-        print("I don't know what to do")
-
-    if param != "":
-        print("Param: " + param)
 
     temp = send(param).split(" ")
     state = (int(temp[1]), int(temp[0]))
