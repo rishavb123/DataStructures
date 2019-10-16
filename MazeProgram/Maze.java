@@ -132,6 +132,7 @@ public class Maze {
                             break;
                         case '+':
                             endPos = new Location(x, y);
+                            break;
                     }
 
             return new Maze(gameObjects, explorerX, explorerY, endPos);
@@ -146,21 +147,29 @@ public class Maze {
             for(int y = 0; y <  getHeight(); y++)
                 if(get(x, y) != null)
                     get(x, y).draw(g);
+        
+        int x = endPos.getX();
+        int y = endPos.getY();
+        g.setColor(Color.GREEN);
+        g.fillRect(x * Wall.width, y * Wall.height, Wall.width, Wall.height);
         g.setColor(Color.WHITE);
-        g.fillOval((int) (0.4 * Application.screenWidth), (int) (0.5 * Application.screenHeight), (int) (0.2 * Application.screenWidth),  (int) (0.2 * Application.screenWidth));
+        g.drawRect(x * Wall.width, y * Wall.height, Wall.width, Wall.height);
+
+        g.setColor(Color.WHITE);
+        g.fillOval((int) (0.4 * Application.screenWidth), (int) (0.7 * Application.screenHeight), (int) (0.2 * Application.screenWidth),  (int) (0.2 * Application.screenWidth));
         g.setColor(Color.RED);
         switch(explorer.getDirection()) {
             case Explorer.UP:
-                g.fillOval((int) ((0.5 - 0.005) * Application.screenWidth), (int) (0.5 * Application.screenHeight), (int)(0.01 * Application.screenWidth), (int) (0.1 * Application.screenWidth));
+                g.fillOval((int) ((0.5 - 0.005) * Application.screenWidth), (int) (0.7 * Application.screenHeight), (int)(0.01 * Application.screenWidth), (int) (0.1 * Application.screenWidth));
                 break;
             case Explorer.RIGHT:
-                g.fillOval((int) ((0.5) * Application.screenWidth), (int) (0.5 * Application.screenHeight + 0.1 * Application.screenWidth), (int)(0.1 * Application.screenWidth), (int) (0.01 * Application.screenWidth));
+                g.fillOval((int) ((0.5) * Application.screenWidth), (int) (0.7 * Application.screenHeight + 0.1 * Application.screenWidth), (int)(0.1 * Application.screenWidth), (int) (0.01 * Application.screenWidth));
                 break;
             case Explorer.DOWN:
-                g.fillOval((int) ((0.5 - 0.005) * Application.screenWidth), (int) (0.5 * Application.screenHeight + 0.1 * Application.screenWidth), (int) (.01 * Application.screenWidth), (int) (0.1 * Application.screenWidth));
+                g.fillOval((int) ((0.5 - 0.005) * Application.screenWidth), (int) (0.7 * Application.screenHeight + 0.1 * Application.screenWidth), (int) (.01 * Application.screenWidth), (int) (0.1 * Application.screenWidth));
                 break;
             case Explorer.LEFT:
-                g.fillOval((int) ((0.4) * Application.screenWidth), (int) (0.5 * Application.screenHeight + 0.1 * Application.screenWidth), (int)(0.1 * Application.screenWidth), (int) (0.01 * Application.screenWidth));
+                g.fillOval((int) ((0.4) * Application.screenWidth), (int) (0.7 * Application.screenHeight + 0.1 * Application.screenWidth), (int)(0.1 * Application.screenWidth), (int) (0.01 * Application.screenWidth));
                 break;
         }
     }
@@ -394,55 +403,6 @@ public class Maze {
 
     public int max(int a, int b) {
         return a > b? a : b;
-    }
-
-    public void draw3dTest(Graphics g) {
-        int[] curX = {0, 20, 20, 0};
-        int[] curY = {0, 17, 83, 100};
-
-        int width = 20;        
-
-        int[] x = copy(curX);
-        int[] y = copy(curY);
-        int[] fx = flipX(x);
-        g.setColor(ceilingColor);
-        g.fillRect(transformX(0), transformY(0), screenWidth3d, screenHeight3d);
-        g.setColor(wallColor);
-
-        transformPoints(x, y, fx);
-        // g.fillPolygon(x, y, 4);
-        // g.fillPolygon(fx, y, 4);
-        
-        Location location = explorer.getLocation();
-        while(true) {
-            Location nextLocation = Explorer.nextLocation(explorer.getDirection(), location);
-            width /= 2;
-            if(get(nextLocation) instanceof Wall) {
-                curX = new int[]{curX[2], curX[2], flipX(curX[2]), flipX(curX[2])};
-                curY = new int[]{curY[1], curY[2], curY[2], curY[1]};
-                int[] xc = copy(curX);
-                int[] yc = copy(curY);
-
-                transformPoints(xc, yc);
-                g.fillPolygon(xc, yc, 4);
-                break;
-            } else {
-                Location left = Explorer.nextLocation(Explorer.turnLeft(explorer.getDirection()), nextLocation);
-                Location right = Explorer.nextLocation(Explorer.turnRight(explorer.getDirection()), nextLocation);
-                curX = new int[]{curX[1], curX[1] + width, curX[1] + width, curX[1]};
-                curY = copy(curY);
-                x = copy(curX);
-                y = copy(curY);
-                fx = flipX(x);
-                if(get(left) instanceof Wall) {
-                    g.fillPolygon(x, y, 4);
-                } else {
-                    g.fillPolygon(fx, y, 4);
-                }
-            }
-            location = nextLocation;
-        }
-
     }
 
     public int[] copy(int[] arr) {

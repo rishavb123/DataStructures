@@ -8,7 +8,7 @@ import java.awt.Color;
 
 public class Application extends JPanel {
 
-    public static final String fileName = "./mazes/one.txt";
+    public static final String fileName = "./mazes/three.txt";
     public static final int screenWidth = 1000;
     public static final int screenHeight = 700;
 
@@ -44,7 +44,14 @@ public class Application extends JPanel {
                         maze.getExplorer().turnRight();
                     }
                     repaint();   
-                    return maze.getExplorer().getLocation().getX() + " " + maze.getExplorer().getLocation().getY();
+                    return maze.getExplorer().getLocation().getX() + " " + maze.getExplorer().getLocation().getY() + " " + maze.getExplorer().getDirection() + " " + (maze.isDone()? 1 : 0);
+                }
+            });
+            receivers.put("file", new HttpServer.Receiver(){
+            
+                @Override
+                public String call(String params) {
+                    return "." + fileName;
                 }
             });
             server = new HttpServer(PORT, receivers);
@@ -81,8 +88,6 @@ public class Application extends JPanel {
                         break;
                 }
                 repaint();
-                if(maze.isDone())
-                    System.out.println("Great Job ur done!");
             }
 
             @Override
