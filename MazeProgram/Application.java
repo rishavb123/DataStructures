@@ -1,19 +1,23 @@
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashMap;
+import java.util.List;
 import java.awt.event.KeyEvent;
 import java.awt.Graphics;
 import java.awt.Color;
 
 public class Application extends JPanel {
 
-    public static final String fileName = "./mazes/three.txt";
     public static final int screenWidth = 1000;
     public static final int screenHeight = 700;
-
+    
     private static final long serialVersionUID = 1L;
-
+    
+    public static String fileName = "./mazes/three.txt";
     private JFrame frame;
 
     private Maze maze;
@@ -24,34 +28,53 @@ public class Application extends JPanel {
     private HttpServer server;
     private static final int PORT = 8000;
 
+    private Process process;
+
     public Application() {
 
-        if(usingServer) {
+        if (usingServer) {
             HashMap<String, HttpServer.Receiver> receivers = new HashMap<>();
-            receivers.put("move", new HttpServer.Receiver(){
-            
+            receivers.put("move", new HttpServer.Receiver() {
+
                 @Override
                 public String call(String params) {
-                    if(params.equals("front")) {
+                    if (params.equals("front")) {
                         maze.getExplorer().move();
                         maze.flip = !maze.flip;
-                    } else if(params.equals("back")) {
+                    } else if (params.equals("back")) {
                         maze.getExplorer().moveBack();
                         maze.flip = !maze.flip;
-                    } else if(params.equals("left")) {
+                    } else if (params.equals("left")) {
                         maze.getExplorer().turnLeft();
-                    } else if(params.equals("right")) {
+                    } else if (params.equals("right")) {
                         maze.getExplorer().turnRight();
                     }
-                    repaint();   
-                    return maze.getExplorer().getLocation().getX() + " " + maze.getExplorer().getLocation().getY() + " " + maze.getExplorer().getDirection() + " " + (maze.isDone()? 1 : 0);
+                    repaint();
+                    return maze.getExplorer().getLocation().getX() + " " + maze.getExplorer().getLocation().getY() + " "
+                            + maze.getExplorer().getDirection() + " " + (maze.isDone() ? 1 : 0);
                 }
             });
-            receivers.put("file", new HttpServer.Receiver(){
-            
+            receivers.put("file", new HttpServer.Receiver() {
+
                 @Override
                 public String call(String params) {
                     return "." + fileName;
+                }
+            });
+            receivers.put("controller", new HttpServer.Receiver() {
+
+                @Override
+                public String call(String params) {
+                    File file = new File("./html/index.html");
+                    String html = "";
+                    try {
+                        List<String> list = Files.readAllLines(file.toPath());
+                        for(String s: list)
+                            html += s + "\n";
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return html;
                 }
             });
             server = new HttpServer(PORT, receivers);
@@ -106,6 +129,21 @@ public class Application extends JPanel {
                     case 32:
                         show3d = !show3d;
                         break;
+                    case 80:
+                        try {
+                            if(process != null && process.isAlive()) {
+                                process.destroy();
+                            } else {
+                                Runtime.getRuntime().exec("python ./python/maze_ai.py");
+                                ProcessBuilder builder = new ProcessBuilder("python", "maze_ai.py");
+                                builder.directory(new File("python"));
+                                builder.redirectError();
+                                process = builder.start();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        break;
                 }
                 repaint();
             }
@@ -141,6 +179,8 @@ public class Application extends JPanel {
     }
 
     public static void main(String[] args) {
+        if(args.length > 0)
+            fileName = "./mazes/" + args[0] + ".txt";
         Application app = new Application();
     }
 

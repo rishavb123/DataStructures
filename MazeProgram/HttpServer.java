@@ -68,7 +68,7 @@ public class HttpServer {
 
                             pout.print(
                                 "HTTP/1.0 200 OK"+newLine+
-                                "Content-Type: text/plain"+newLine+
+                                "Content-Type: text/html"+newLine+
                                 "Date: "+new Date()+newLine+
                                 "Content-length: "+response.length()+newLine+newLine+
                                 response
