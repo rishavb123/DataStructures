@@ -1,2 +1,2 @@
-EPSILON = 1e-3
+EPSILON = 1e-5
 GAMMA = 0.9

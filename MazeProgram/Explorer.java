@@ -13,9 +13,14 @@ public class Explorer extends GameObject {
 
     private int vision = 5;
 
-    public Explorer(int x, int y) {
+    private int health;
+    private int maxHealth;
+
+    public Explorer(int x, int y, int health) {
         super(x, y);
         direction = RIGHT;
+        this.health = health;
+        maxHealth = health;
     }
 
     public static int flip(int direction) {
@@ -72,20 +77,35 @@ public class Explorer extends GameObject {
 
     public void move() {
         Location nextLoc = nextLocation(direction);
-        if(nextLoc.getX() >= 0 && nextLoc.getX() < maze.getWidth() && nextLoc.getY() >= 0 && nextLoc.getY() < maze.getHeight() && maze.get(nextLoc) == null) {
+        if(nextLoc.getX() >= 0 && nextLoc.getX() < maze.getWidth() && nextLoc.getY() >= 0 && nextLoc.getY() < maze.getHeight() && (maze.get(nextLoc) == null || maze.get(nextLoc) instanceof PhaseObject)) {
             maze.set(location, null);
             maze.set(nextLoc, this);
             location = nextLoc;
+            health--;
         }
     }
 
     public void moveBack() {
         Location nextLoc = nextLocation(flip(direction));
-        if(nextLoc.getX() >= 0 && nextLoc.getX() < maze.getWidth() && nextLoc.getY() >= 0 && nextLoc.getY() < maze.getHeight() && maze.get(nextLoc) == null) {
+        if(nextLoc.getX() >= 0 && nextLoc.getX() < maze.getWidth() && nextLoc.getY() >= 0 && nextLoc.getY() < maze.getHeight() && (maze.get(nextLoc) == null || maze.get(nextLoc) instanceof PhaseObject)) {
             maze.set(location, null);
             maze.set(nextLoc, this);
             location = nextLoc;
+            health--;
         }
+    }
+
+    public boolean isDead() {
+        return health <= 0;
+    }
+
+    public void damage(int d) {
+        health -= d;
+    }
+
+    public double getAlpha() {
+        double a = (1 - (double) health / maxHealth) * 0.7;
+        return a > 0.7? 0.7 : a < 0? 0: a;
     }
 
     public void turnLeft() {

@@ -165,8 +165,10 @@ public class Application extends JPanel {
         if(maze.isDone()) {
             g.setColor(Color.WHITE);
             g.drawString("Rishav is cool not", 20, 20);
-        }
-        else {
+        } else if(maze.getExplorer().isDead()) {
+            g.setColor(Color.WHITE);
+            g.drawString("Rishav is deaded", 20, 20);
+        } else {
             maze.draw(g);
             if(show3d)
                 maze.draw3d(g);

@@ -32,7 +32,7 @@ public class Maze {
 
         gameObjects = new GameObject[w][h];
 
-        explorer = new Explorer(0, 0);
+        explorer = new Explorer(0, 0, 1);
         gameObjects[0][0] = explorer;
         explorer.setMaze(this);
 
@@ -97,7 +97,10 @@ public class Maze {
     }
 
     public void set(int x, int y, GameObject g) {
-        gameObjects[x][y] = g;
+        if(get(x, y) != null && get(x, y) instanceof PhaseObject)
+            ((PhaseObject) get(x, y)).put(g);
+        else
+            gameObjects[x][y] = g;
     }
 
     public void set(Location l, GameObject g) {
@@ -126,12 +129,16 @@ public class Maze {
                             gameObjects[x][y] = new Wall(x, y);
                             break;
                         case 'S':
-                            gameObjects[x][y] = new Explorer(x, y);
+                            gameObjects[x][y] = new Explorer(x, y, w * h / 3);
                             explorerX = x;
                             explorerY = y;
                             break;
                         case '+':
                             endPos = new Location(x, y);
+                            break;
+                        case '~':
+                            gameObjects[x][y] = new Trap(x, y);
+                            System.out.println("Trap");
                             break;
                     }
 
@@ -399,6 +406,9 @@ public class Maze {
         //HERE
         g2d.drawImage(explorerImage, (int) (Application.screenWidth + (flip? 1: -1) * 0.9 * explorerImage.getWidth()) / 2, (int) (Application.screenHeight * 0.25), (flip? -1: 1) * (int) (0.9 * explorerImage.getWidth()), (int) (0.9 * explorerImage.getHeight()), null);
         
+        g.setColor(new Color(255, 0, 0, (int) (explorer.getAlpha() * 255)));
+        g.fillRect(wMargin3d, hMargin3d, screenWidth3d, screenHeight3d);
+
     }
 
     public int max(int a, int b) {

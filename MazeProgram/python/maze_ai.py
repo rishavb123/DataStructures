@@ -15,35 +15,38 @@ def get(url):
 filename = get("http://localhost:8000/file")
 grid = Grid.load(filename)
 
-log = False
-
 policy = init_random_policy(grid)
 
-if log:
-    print("board:")
-    grid.draw_board()
+# print("board:")
+# grid.draw_board()
 
-    print("rewards:")
-    print_values(grid.rewards, grid)
+# print("rewards:")
+# print_values(grid.rewards, grid)
 
-    print("initial_policy:")
-    print_policy(policy, grid)
+# print("initial_policy:")
+# print_policy(policy, grid)
 
-V = init_random_value_function(grid)
-policy = init_random_policy(grid)
 
-while True:
-    iterative_policy_evaluation(grid, policy, V)
-    is_policy_converged = policy_iteration(grid, V, policy)[1]
-    if is_policy_converged:
-        break
+## Policy iteration
+# 
+# policy = init_random_policy(grid)
+# V = init_random_value_function(grid)
+# 
+# while True:
+#     iterative_policy_evaluation(grid, policy, V)
+#     is_policy_converged = policy_iteration(grid, V, policy)[1]
+#     if is_policy_converged:
+#         break
 
-if log:
-    print("value_function:")
-    print_values(V, grid)
+# Value iteration
+V = value_iteration(grid)
+policy = policy_iteration(grid, V)[0]
 
-    print("final_policy:")
-    print_policy(policy, grid)
+# print("value_function:")
+# print_values(V, grid)
+
+# print("final_policy:")
+# print_policy(policy, grid)
 
 # if input('Would you like to see the agent play the maze? (Y / n): ').lower()[0] == 'y':
 #     grid.play(policy)
