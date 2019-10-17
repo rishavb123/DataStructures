@@ -140,6 +140,13 @@ public class Explorer extends GameObject {
     }
 
     /**
+     * @return the maxHealth
+     */
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    /**
      * @return the vision
      */
     public int getVision() {

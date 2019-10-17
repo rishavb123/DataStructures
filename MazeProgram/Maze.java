@@ -129,7 +129,7 @@ public class Maze {
                             gameObjects[x][y] = new Wall(x, y);
                             break;
                         case 'S':
-                            gameObjects[x][y] = new Explorer(x, y, w * h / 3);
+                            gameObjects[x][y] = new Explorer(x, y, w * h);
                             explorerX = x;
                             explorerY = y;
                             break;

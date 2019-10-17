@@ -144,7 +144,7 @@ class Grid:
         return g
 
     @staticmethod
-    def load(filename, step_cost=-0.1, win_reward=1, lose_punishment=-1, bump_factor=10, money_reward=None):
+    def load(filename, step_cost=-0.1, win_reward=10, lose_punishment=-1, bump_factor=10, money_reward=None):
         if money_reward == None:
             money_reward = -step_cost/2
         with open(filename) as file:

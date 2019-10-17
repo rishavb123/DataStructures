@@ -1,7 +1,7 @@
 import java.awt.Graphics;
 import java.awt.Color;
 
-public class Wall extends GameObject{
+public class Wall extends PhaseObject{
 
     public static int width;
     public static int height;
@@ -21,6 +21,7 @@ public class Wall extends GameObject{
         g.fillRect(x * width, y * height, width, height);
         g.setColor(Color.WHITE);
         g.drawRect(x * width, y * height, width, height);
+        super.draw(g);
     }
 
 }

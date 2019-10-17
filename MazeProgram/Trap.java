@@ -1,7 +1,15 @@
 import java.awt.Graphics;
 import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
 
-public class Trap extends PhaseObject{
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+public class Trap extends PhaseObject {
 
     public static int width;
     public static int height;
@@ -15,9 +23,21 @@ public class Trap extends PhaseObject{
 
     @Override
     public void put(GameObject obj) {
-        if(obj instanceof Explorer) {
-            System.out.println("damage");
-            ((Explorer) obj).damage(100);
+        if (obj instanceof Explorer) {
+            ((Explorer) obj).damage(((Explorer) obj).getMaxHealth() / 10);
+            String soundName = "./res/scream.wav";
+            try {
+                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(soundName).getAbsoluteFile());
+                Clip clip = AudioSystem.getClip();
+                clip.open(audioInputStream);
+                clip.start();
+            } catch (LineUnavailableException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (UnsupportedAudioFileException e) {
+                e.printStackTrace();
+            }
         }
         super.put(obj);
     }
