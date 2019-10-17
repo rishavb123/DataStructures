@@ -178,9 +178,10 @@ public class Application extends JPanel {
             g.setColor(Color.WHITE);
             g.drawString("Rishav is deaded", 20, 20);
         } else {
-            maze.draw(g);
             if(show3d)
                 maze.draw3d(g);
+            else
+                maze.draw(g);
         }
         
     }
