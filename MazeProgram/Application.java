@@ -1,4 +1,3 @@
-import javax.sound.sampled.Line;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.event.KeyListener;
@@ -155,6 +154,15 @@ public class Application extends JPanel {
             }
 
         });
+    }
+
+    public static boolean isInt(String s) {
+        try {
+            Integer.parseInt(s);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public void paintComponent(Graphics g) {

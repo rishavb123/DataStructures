@@ -5,12 +5,14 @@ import java.awt.Graphics;
 import java.awt.Color;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.HashMap;
 import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
 
 public class Maze {
 
     private GameObject[][] gameObjects;
+    private HashMap<Location, Location> teleport;
     private Explorer explorer;
     private Location endPos;
 
@@ -28,19 +30,10 @@ public class Maze {
     public BufferedImage explorerImage;
     public boolean flip = false;
 
-    public Maze(int w, int h) {
-
-        gameObjects = new GameObject[w][h];
-
-        explorer = new Explorer(0, 0, 1);
-        gameObjects[0][0] = explorer;
-        explorer.setMaze(this);
-
-    }
-
-    public Maze(GameObject[][] gameObjects, int explorerX, int explorerY, Location endPos) {
+    public Maze(GameObject[][] gameObjects, int explorerX, int explorerY, Location endPos, HashMap<Location, Location> teleport) {
         int w = gameObjects.length;
         int h = gameObjects[0].length;
+        this.teleport = teleport;
         
         Wall.width = Application.screenWidth / w > 30? 30 : Application.screenWidth / w;
         Wall.height = Application.screenHeight / h > 30? 30 : Application.screenHeight / h;
@@ -72,6 +65,13 @@ public class Maze {
 
     public int getHeight() {
         return gameObjects[0].length;
+    }
+
+    public Location teleportTo(Location loc) {
+        for(Location key: teleport.keySet())
+            if(loc.equals(key))
+                return teleport.get(key);
+        return loc;
     }
 
     public Color applyFilter(Color orig, int dist) {
@@ -122,8 +122,12 @@ public class Maze {
 
             Location endPos = new Location(0, 0);
 
+            HashMap<Location, Location> teleport = new HashMap<>();
+
+            HashMap<Integer, Location> stuff = new HashMap<>();
+
             for(int y = 0; y < h; y++)
-                for(int x = 0; x < w; x++)
+                for(int x = 0; x < w; x++) {
                     switch(list.get(y).charAt(x)) {
                         case '#':
                             gameObjects[x][y] = new Wall(x, y);
@@ -138,11 +142,22 @@ public class Maze {
                             break;
                         case '~':
                             gameObjects[x][y] = new Trap(x, y);
-                            System.out.println("Trap");
                             break;
                     }
+                    if(Application.isInt(list.get(y).charAt(x) + "")) {
+                        gameObjects[x][y] = new Portal(x, y, new Color(0, 0, 255 - 20 * Integer.parseInt(list.get(y).charAt(x) + "")));
+                        if(stuff.get(Integer.parseInt(list.get(y).charAt(x) + "")) == null)
+                            stuff.put(Integer.parseInt(list.get(y).charAt(x) + ""), new Location(x, y));
+                        else {
+                            Location loc = new Location(x, y);
+                            Location loc2 = stuff.get(Integer.parseInt(list.get(y).charAt(x) + ""));
+                            teleport.put(loc, loc2);
+                            teleport.put(loc2, loc);
+                        }
+                    }
+                }
 
-            return new Maze(gameObjects, explorerX, explorerY, endPos);
+            return new Maze(gameObjects, explorerX, explorerY, endPos, teleport);
         } catch(IOException e) {
             System.err.println("File error");
         }
@@ -207,18 +222,20 @@ public class Maze {
             int ny = y + (int)((1 - rh) / 2.0 * nh);
             int ny2 = y + (int)(((1 - rh) / 2.0 + 1) * nh);
             
+            Color cc2 = get(location) instanceof Trap? Color.RED: ceilingColor;
+            Color fc2 = get(location) instanceof Portal? Color.MAGENTA: floorColor;
             location = Explorer.nextLocation(explorer.getDirection(), location);
 
             int[] xc = new int[]{x, nx, flipX(nx), flipX(x)};
             int[] yc = new int[]{y2, ny2, ny2, y2};
-            g.setColor(applyFilter(floorColor, i));
+            g.setColor(applyFilter(fc2, i));
             g.fillPolygon(xc, yc, 4);
             g.setColor(lineColor);
             g.drawPolygon(xc, yc, 4);
 
             int[] xf = new int[]{x, nx, flipX(nx), flipX(x)};
             int[] yf = new int[]{y, ny, ny, y};
-            g.setColor(applyFilter(ceilingColor, i));
+            g.setColor(applyFilter(cc2, i));
             g.fillPolygon(xf, yf, 4);
             g.setColor(lineColor);
             g.drawPolygon(xf, yf, 4);
@@ -232,18 +249,21 @@ public class Maze {
                 g.drawPolygon(xs, ys, 4);
             } else {
 
+                Color cc = get(left) instanceof Trap? Color.RED: ceilingColor;
+                Color fc = get(left) instanceof Portal? Color.MAGENTA: floorColor;
+
                 int[] xwfc = new int[]{x, x, nx};
                 int[] ywc = new int[]{y, ny, ny};
                 int[] ywf = new int[]{y2, ny2, ny2};
 
                 g.setColor(lineColor);
                 g.drawPolygon(xwfc, ywc, 3);
-                g.setColor(applyFilter(ceilingColor, i));
+                g.setColor(applyFilter(cc, i));
                 g.fillPolygon(xwfc, ywc, 3);
 
                 g.setColor(lineColor);
                 g.drawPolygon(xwfc, ywf, 3);
-                g.setColor(applyFilter(floorColor, i));
+                g.setColor(applyFilter(fc, i));
                 g.fillPolygon(xwfc, ywf, 3);
 
                 if(get(Explorer.nextLocation(explorer.getDirection(), left)) instanceof Wall){
@@ -261,6 +281,8 @@ public class Maze {
                     Location l = Explorer.nextLocation(explorer.getDirection(), left);
                     for(int j = i + 1; j < explorer.getVision(); j++) {
                         hh = (int)(hh * rh);
+                        Color cc3 = get(l) instanceof Trap? Color.RED: ceilingColor;
+                        Color fc3 = get(l) instanceof Portal? Color.MAGENTA: floorColor;
                         if(get(l) instanceof Wall) {
                             int[] rectX = new int[]{x, nx, nx, x};
                             int[] rectY = new int[]{hy, hy, hy2, hy2};
@@ -288,9 +310,9 @@ public class Maze {
                         g.setColor(lineColor);
                         g.drawPolygon(xs, ys, 4);
                         g.drawPolygon(xs, ys2, 4);
-                        g.setColor(applyFilter(floorColor, j));
+                        g.setColor(applyFilter(fc3, j));
                         g.fillPolygon(xs, ys, 4);
-                        g.setColor(applyFilter(ceilingColor, j));
+                        g.setColor(applyFilter(cc3, j));
                         g.fillPolygon(xs, ys2, 4);
 
                     }
@@ -310,14 +332,17 @@ public class Maze {
                 int[] ywc = new int[]{y, ny, ny};
                 int[] ywf = new int[]{y2, ny2, ny2};
 
+                Color cc = get(right) instanceof Trap? Color.RED: ceilingColor;
+                Color fc = get(right) instanceof Portal? Color.MAGENTA: floorColor;
+
                 g.setColor(lineColor);
                 g.drawPolygon(xwfc, ywc, 3);
-                g.setColor(applyFilter(ceilingColor, i));
+                g.setColor(applyFilter(cc, i));
                 g.fillPolygon(xwfc, ywc, 3);
 
                 g.setColor(lineColor);
                 g.drawPolygon(xwfc, ywf, 3);
-                g.setColor(applyFilter(floorColor, i));
+                g.setColor(applyFilter(fc, i));
                 g.fillPolygon(xwfc, ywf, 3);
 
                 if(get(Explorer.nextLocation(explorer.getDirection(), right)) instanceof Wall){
@@ -335,6 +360,8 @@ public class Maze {
                     Location l = Explorer.nextLocation(explorer.getDirection(), right);
                     for(int j = i + 1; j < explorer.getVision() + 1; j++) {
                         hh = (int)(hh * rh);
+                        Color cc3 = get(l) instanceof Trap? Color.RED: ceilingColor;
+                        Color fc3 = get(l) instanceof Portal? Color.MAGENTA: floorColor;
                         if(get(l) instanceof Wall) {
                             int[] rectX = flipX(new int[]{x, nx, nx, x});
                             int[] rectY = new int[]{hy, hy, hy2, hy2};
@@ -362,9 +389,9 @@ public class Maze {
                         g.setColor(lineColor);
                         g.drawPolygon(xs, ys, 4);
                         g.drawPolygon(xs, ys2, 4);
-                        g.setColor(applyFilter(floorColor, j));
+                        g.setColor(applyFilter(fc3, j));
                         g.fillPolygon(xs, ys, 4);
-                        g.setColor(applyFilter(ceilingColor, j));
+                        g.setColor(applyFilter(cc3, j));
                         g.fillPolygon(xs, ys2, 4);
 
 

@@ -9,20 +9,22 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-public class Trap extends PhaseObject {
+public class Portal extends PhaseObject {
 
     public static int width3d = Application.screenWidth / 3;
     public static int height3d = Application.screenHeight;
 
-    public Trap(int x, int y) {
+    private Color color;
+
+    public Portal(int x, int y, Color c) {
         super(x, y);
+        color = c;
     }
 
     @Override
     public void put(GameObject obj) {
         if (obj instanceof Explorer) {
-            ((Explorer) obj).damage(((Explorer) obj).getMaxHealth() / 10);
-            String soundName = "./res/scream.wav";
+            String soundName = "./res/teleport.wav";
             try {
                 AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(soundName).getAbsoluteFile());
                 Clip clip = AudioSystem.getClip();
@@ -43,7 +45,7 @@ public class Trap extends PhaseObject {
     public void draw(Graphics g) {
         int x = location.getX();
         int y = location.getY();
-        g.setColor(Color.RED);
+        g.setColor(color);
         g.fillRect(x * Wall.width, y * Wall.height, Wall.width, Wall.height);
         g.setColor(Color.WHITE);
         g.drawRect(x * Wall.width, y * Wall.height, Wall.width, Wall.height);

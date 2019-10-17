@@ -38,7 +38,7 @@ public class Explorer extends GameObject {
     }
 
     public Location nextLocation(int direction) {
-        Location nextLoc = new Location(location.getX(), location.getY());        
+        Location nextLoc = new Location(location.getX(), location.getY());
         switch(direction) {
             case LEFT:
                 nextLoc.setX(nextLoc.getX() - 1);
@@ -53,7 +53,7 @@ public class Explorer extends GameObject {
                 nextLoc.setY(nextLoc.getY() + 1);
                 break;
         }
-        return nextLoc;
+        return maze.teleportTo(nextLoc);
     }
     
     public static Location nextLocation(int direction, Location location) {
@@ -125,7 +125,7 @@ public class Explorer extends GameObject {
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.RED);
+        g.setColor(new Color(255, 0, 255));
         int x = location.getX();
         int y = location.getY();
         g.fillOval(x * Wall.width + (int)(0.05 * Wall.width), y * Wall.height + (int)(0.05 * Wall.height), (int)(0.9 * Wall.width), (int)(0.9 * Wall.height));

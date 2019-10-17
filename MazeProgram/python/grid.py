@@ -9,7 +9,8 @@ class Grid:
         self.rows = rows
         self.cols = cols
         self.start = start
-        self.set_state(start) 
+        self.set_state(start)
+        self.teleport = {}
 
     def restart(self):
         self.set_state(self.start)
@@ -20,6 +21,9 @@ class Grid:
 
     def set_board(self, board):
         self.board = board
+
+    def set_teleport(self, teleport):
+        self.teleport = teleport
     
     def draw_board(self, symbol='A'):
         board_copy = [x.copy() for x in self.board]
@@ -57,6 +61,8 @@ class Grid:
                 self.j += 1
         else:
             print('Not a valid action')
+        if self.get_state() in self.teleport:
+            self.set_state(self.teleport[self.get_state()])
         return self.rewards.get(self.get_state(), 0)
 
     def undo_move(self, action):
@@ -152,8 +158,25 @@ class Grid:
             lines = s.split('\n')
             actions = {}
             rewards = {}
+            temp = {}
             start = (0, 0)
             rows, cols = len(lines), len(lines[0])
+            for i in range(rows):
+                for j in range(cols):
+                    c = lines[i][j]
+                    if c.isdigit():
+                        n = int(c)
+                        if n in temp:
+                            temp[n] = [(i, j), temp[n]]
+                        else:
+                            temp[n] = (i, j)
+            teleport = {}
+            for key in temp:
+                arr = temp[key]
+                teleport[arr[0]] = arr[1]
+                teleport[arr[1]] = arr[0]
+            def teleport_from(s):
+                return teleport[s] if s in teleport else s
             for i in range(rows):
                 for j in range(cols):
                     s = (i, j)
@@ -168,21 +191,21 @@ class Grid:
                     elif c == '$':
                         c = '_'
                         current_reward = money_reward
-                    if c == '_':
+                    if c == '_' or c.isdigit():
                         a = []
                         if current_reward == None:
                             rewards[s] = step_cost
                         else:
                             rewards[s] = current_reward
                         motion_states = [
-                            (i - 1, j),
-                            (i + 1, j),
-                            (i, j - 1),
-                            (i, j + 1)
+                            teleport_from((i - 1, j)),
+                            teleport_from((i + 1, j)),
+                            teleport_from((i, j - 1)),
+                            teleport_from((i, j + 1))
                         ]
                         for state_index in range(len(motion_states)):
                             state = motion_states[state_index]
-                            if state[0] >= 0 and state[1] >= 0 and state[0] < rows and state[1] < cols and lines[state[0]][state[1]] in ['S', '$', '~', '_', '+', '-']:
+                            if state[0] >= 0 and state[1] >= 0 and state[0] < rows and state[1] < cols and (lines[state[0]][state[1]] in ['S', '$', '~', '_', '+', '-'] or lines[state[0]][state[1]].isdigit()):
                                 a.append(ACTIONS[state_index])
                         actions[s] = a
                     elif c == '+':
@@ -200,5 +223,8 @@ class Grid:
                 '~': 'n',
                 '+': 'G'
             }
+            for i in range(10):
+                board_symbols[str(i)] = str(i)
             g.set_board([[board_symbols[c] for c in l] for l in lines])
+            g.set_teleport(teleport)
             return g

@@ -12,7 +12,7 @@ def get(url):
     r = requests.get(url = url)
     return r.text
 
-filename = '../mazes/three.txt'
+filename = '../mazes/six.txt'
 grid = Grid.load(filename)
 
 policy = init_random_policy(grid)
