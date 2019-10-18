@@ -145,7 +145,7 @@ public class Maze {
                             break;
                     }
                     if(Application.isInt(list.get(y).charAt(x) + "")) {
-                        gameObjects[x][y] = new Portal(x, y, new Color(0, 0, 255 - 20 * Integer.parseInt(list.get(y).charAt(x) + "")));
+                        gameObjects[x][y] = new Portal(x, y, new Color(0, 30 * Integer.parseInt(list.get(y).charAt(x) + ""), 255 - 30 * Integer.parseInt(list.get(y).charAt(x) + "")));
                         if(stuff.get(Integer.parseInt(list.get(y).charAt(x) + "")) == null)
                             stuff.put(Integer.parseInt(list.get(y).charAt(x) + ""), new Location(x, y));
                         else {
@@ -172,7 +172,7 @@ public class Maze {
         
         int x = endPos.getX();
         int y = endPos.getY();
-        g.setColor(Color.GREEN);
+        g.setColor(Color.WHITE);
         g.fillRect(x * Wall.width, y * Wall.height, Wall.width, Wall.height);
         g.setColor(Color.WHITE);
         g.drawRect(x * Wall.width, y * Wall.height, Wall.width, Wall.height);
