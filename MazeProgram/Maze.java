@@ -177,22 +177,24 @@ public class Maze {
         g.setColor(Color.WHITE);
         g.drawRect(x * Wall.width, y * Wall.height, Wall.width, Wall.height);
 
-        g.setColor(Color.WHITE);
-        g.fillOval((int) (0.4 * Application.screenWidth), (int) (0.7 * Application.screenHeight), (int) (0.2 * Application.screenWidth),  (int) (0.2 * Application.screenWidth));
-        g.setColor(Color.RED);
-        switch(explorer.getDirection()) {
-            case Explorer.UP:
-                g.fillOval((int) ((0.5 - 0.005) * Application.screenWidth), (int) (0.7 * Application.screenHeight), (int)(0.01 * Application.screenWidth), (int) (0.1 * Application.screenWidth));
-                break;
-            case Explorer.RIGHT:
-                g.fillOval((int) ((0.5) * Application.screenWidth), (int) (0.7 * Application.screenHeight + 0.1 * Application.screenWidth), (int)(0.1 * Application.screenWidth), (int) (0.01 * Application.screenWidth));
-                break;
-            case Explorer.DOWN:
-                g.fillOval((int) ((0.5 - 0.005) * Application.screenWidth), (int) (0.7 * Application.screenHeight + 0.1 * Application.screenWidth), (int) (.01 * Application.screenWidth), (int) (0.1 * Application.screenWidth));
-                break;
-            case Explorer.LEFT:
-                g.fillOval((int) ((0.4) * Application.screenWidth), (int) (0.7 * Application.screenHeight + 0.1 * Application.screenWidth), (int)(0.1 * Application.screenWidth), (int) (0.01 * Application.screenWidth));
-                break;
+        if(Application.showCompass) {
+            g.setColor(Color.WHITE);
+            g.fillOval((int) (0.7 * Application.screenWidth), (int) (0.7 * Application.screenHeight), (int) (0.2 * Application.screenWidth),  (int) (0.2 * Application.screenWidth));
+            g.setColor(Color.RED);
+            switch(explorer.getDirection()) {
+                case Explorer.UP:
+                    g.fillOval((int) ((0.8 - 0.005) * Application.screenWidth), (int) (0.7 * Application.screenHeight), (int)(0.01 * Application.screenWidth), (int) (0.1 * Application.screenWidth));
+                    break;
+                case Explorer.RIGHT:
+                    g.fillOval((int) ((0.8) * Application.screenWidth), (int) (0.7 * Application.screenHeight + 0.1 * Application.screenWidth), (int)(0.1 * Application.screenWidth), (int) (0.01 * Application.screenWidth));
+                    break;
+                case Explorer.DOWN:
+                    g.fillOval((int) ((0.8 - 0.005) * Application.screenWidth), (int) (0.7 * Application.screenHeight + 0.1 * Application.screenWidth), (int) (.01 * Application.screenWidth), (int) (0.1 * Application.screenWidth));
+                    break;
+                case Explorer.LEFT:
+                    g.fillOval((int) ((0.7) * Application.screenWidth), (int) (0.7 * Application.screenHeight + 0.1 * Application.screenWidth), (int)(0.1 * Application.screenWidth), (int) (0.01 * Application.screenWidth));
+                    break;
+            }
         }
     }
 
@@ -275,7 +277,7 @@ public class Maze {
                     g.drawPolygon(xs, ys, 4);
                 } else {
                     int hh = (h - nh) / 2;
-                    int hw = (w - nw) / 2;
+                    // int hw = (w - nw) / 2;
                     int hy = ny;
                     int hy2 = ny2;
                     Location l = Explorer.nextLocation(explorer.getDirection(), left);
@@ -354,7 +356,7 @@ public class Maze {
                     g.drawPolygon(xs, ys, 4);
                 } else {
                     int hh = (h - nh) / 2;
-                    int hw = (w - nw) / 2;
+                    // int hw = (w - nw) / 2;
                     int hy = ny;
                     int hy2 = ny2;
                     Location l = Explorer.nextLocation(explorer.getDirection(), right);

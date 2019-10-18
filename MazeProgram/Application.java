@@ -17,12 +17,13 @@ public class Application extends JPanel {
     
     private static final long serialVersionUID = 1L;
     
-    public static String fileName = "./mazes/three.txt";
+    public static String fileName = "./mazes/seven.txt";
     private JFrame frame;
 
     private Maze maze;
 
     private boolean show3d = true;
+    public static boolean showCompass = true;
 
     private boolean usingServer = true;
     private HttpServer server;
@@ -128,6 +129,9 @@ public class Application extends JPanel {
                         break;
                     case 32:
                         show3d = !show3d;
+                        break;
+                    case 67:
+                        showCompass = !showCompass;
                         break;
                     case 80:
                         try {
