@@ -43,8 +43,8 @@ public class Runner {
         double sumLengths = 0;
         // sentenceList.forEachValue(s -> sum2 += s.length());
         for(String s: sentenceList) sumLengths += s.length();
-        System.out.println("Average Word Length: " + (sumLengths / sentenceList.size()));
         // System.out.println("Average Word Length: " + (sum2 / sentenceList.size()));
+        System.out.println("Average Word Length: " + (sumLengths / sentenceList.size()));
 
     }
 }
