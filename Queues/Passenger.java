@@ -26,14 +26,17 @@ public class Passenger implements Comparable<Passenger> {
     public int etdCalc() {
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
         String t = time.split(":")[0].length() > 1? time : "0" + time;
-        if(t.substring(6).equals("AM"))
+        if((t.substring(6).equals("AM") && !time.split(":")[0].equals("12")) || (t.substring(6).equals("PM") && time.split(":")[0].equals("12"))) {
             t = t.substring(0, 6);
+        }
         else
             t = (Integer.parseInt(time.split(":")[0]) + 12) + ":" + time.split(":")[1].substring(0, 2);
         try {
             Date date = sdf.parse(t);
             Date cur = sdf.parse("09:03");
             long diff = date.getTime() - cur.getTime();
+            if(diff < 0) diff += 24L * 60 * 60 * 1000;
+            if(t.split(":")[0].equals("12")) diff -=  12L * 60 * 60 * 1000;
             return (int) (diff / 60000L);
         } catch(Exception e) {
             e.printStackTrace();
