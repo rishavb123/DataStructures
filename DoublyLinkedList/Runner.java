@@ -30,21 +30,34 @@ public class Runner {
         System.out.println("Odd Sum: " + oddSum);
         System.out.println("Duplicated Evens: " + list);
         // list = DoublyLinkedList.fromArray(4, 8, 3, 9, 12, 100, 99);
-        System.out.println("Filtered: " + list.filter((k -> k % 3 == 0)));
+        System.out.println("Filtered: " + list.filter((k -> k % 3 != 0)));
         list.add(3, 55555);
-        // TODO: I HAVE TO SORT IT AND FIND THE MEDIAN VALUE HERE, BUT I DIDN'T DO IT CUZ I WANTED TO ASK IF I COULD CONVERT TO A LIST AND BACK TO USE COLLECTIONS.SORT
-        String sentence = "Hey dude, how is it going.";
+
+        System.out.println("Sorted: " + MyCollections.sort(list));
+        double median = 0;
+        if(list.size() % 2 == 0)
+            median = (list.get(list.size() / 2 - 1) + list.get(list.size() / 2)) / 2.0;
+        else
+            median = list.get(list.size() / 2);
+        System.out.println("The median of the list is " + median);
+        System.out.println("The values that come before it are: " + list.copy().splice(0, list.size() / 2));
+        System.out.println("The values that come after it are: " + list.copy().splice(list.size() / 2 + (list.size() % 2 == 0? 0: 1)));
+
+        String sentence = "Hello dude, how is it going. I'm Zach with a lowercase Z.";
         DoublyLinkedList<String> sentenceList = DoublyLinkedList.fromArray(sentence.replace(",","").replace(".", "").replace("?", "").replace("-", "").replace(";", "").replace("!", "").replace(":", "").split(" "));
         System.out.println("Sentence List: " + sentenceList);
         sentenceList.filter(s -> s.length() > 3);
         System.out.println("Filtered Sentence List: " + sentenceList);
-        // TODO: I HAVE TO SORT IT, BUT I DIDN'T DO IT CUZ I WANTED TO ASK IF I COULD CONVERT TO A LIST AND BACK TO USE COLLECTIONS.SORT
-        // TODO: ASK IF I CAN USE THIS ITERATOR STUFF
+
         double sumLengths = 0;
         // sentenceList.forEachValue(s -> sum2 += s.length());
         for(String s: sentenceList) sumLengths += s.length();
         // System.out.println("Average Word Length: " + (sum2 / sentenceList.size()));
         System.out.println("Average Word Length: " + (sumLengths / sentenceList.size()));
+
+        DoublyLinkedList<String> sentenceListLowerCase = sentenceList.map(str -> str.toLowerCase());
+        MyCollections.sort(sentenceListLowerCase, sentenceList);
+        System.out.println("Sorted: " + sentenceList);
 
     }
 }

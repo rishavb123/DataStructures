@@ -1,6 +1,6 @@
 import java.util.Iterator;
 
-public class DoublyLinkedList<E extends Comparable> implements Iterable<E> {
+public class DoublyLinkedList<E extends Comparable<E>> implements Iterable<E> {
 
     private ListNode root;
     private ListNode end;
@@ -19,7 +19,16 @@ public class DoublyLinkedList<E extends Comparable> implements Iterable<E> {
     }
 
     public void add(E a) {
-        add(size, a);
+        ListNode newNode = new ListNode(a);
+        if(root == null) {
+            root = newNode;
+            end = newNode;
+        } else {
+            end.setNext(newNode);
+            newNode.setPrevious(end);
+            end = newNode;
+        }
+        size++;
     }
 
     public void add(int index, E a) throws IndexOutOfBoundsException {
@@ -36,12 +45,7 @@ public class DoublyLinkedList<E extends Comparable> implements Iterable<E> {
             }
         }
         else if(index == size) {
-            ListNode newNode = new ListNode(a);
-            end.setNext(newNode);
-            newNode.setPrevious(end);
-            end = newNode;
-            size++;
-            return;
+            add(a); return;
         } else {
             ListNode node = root;
             for(int i = 0; i < index - 1; i++)
@@ -146,13 +150,23 @@ public class DoublyLinkedList<E extends Comparable> implements Iterable<E> {
         };
     }
 
-    public E get(int index) {
+    public E get(int index) throws IndexOutOfBoundsException{
         if(index >= size || index < 0) throw new IndexOutOfBoundsException("Index " + index + " is not in DoublyLinkedList of size " + size);
         ListNode node = root;
         for(int i = 0; i < index; i++) 
             node = node.getNext();
         return node.getValue();
     }
+
+    public void set(int index, E a) throws IndexOutOfBoundsException{
+        if(index >= size || index < 0) throw new IndexOutOfBoundsException("Index " + index + " is not in DoublyLinkedList of size " + size);
+        ListNode node = root;
+        for(int i = 0; i < index; i++) 
+            node = node.getNext();
+        node.setValue(a);
+    }
+
+    
 
     public DoublyLinkedList<E> addAll(DoublyLinkedList<E> other) {
         for(E a: other)
@@ -162,6 +176,12 @@ public class DoublyLinkedList<E extends Comparable> implements Iterable<E> {
 
     public DoublyLinkedList<E> splice(int start) {
         return splice(start, size);
+    }
+
+    public void switchValues(int i, int j) {
+        E temp = get(i);
+        set(i, get(j));
+        set(j, temp);
     }
 
     public DoublyLinkedList<E> splice(int start, int finish) {
@@ -225,7 +245,7 @@ public class DoublyLinkedList<E extends Comparable> implements Iterable<E> {
         for(E a: this) func.func(a);
     }
 
-    public <T extends Comparable> DoublyLinkedList<T> map(Mapping<E, T> mapping) {
+    public <T extends Comparable<T>> DoublyLinkedList<T> map(Mapping<E, T> mapping) {
         DoublyLinkedList<T> mappedList = new DoublyLinkedList<>();
         for(E a: this) mappedList.add(mapping.mapping(a));
         return mappedList;
@@ -310,14 +330,14 @@ public class DoublyLinkedList<E extends Comparable> implements Iterable<E> {
     }
 
     @SafeVarargs
-    public static <T extends Comparable> DoublyLinkedList<T> fromArray(T... arr) {
+    public static <T extends Comparable<T>> DoublyLinkedList<T> fromArray(T... arr) {
         DoublyLinkedList<T> list = new DoublyLinkedList<T>();
         for(T a: arr)
             list.add(a);
         return list;
     }
 
-    public static <T extends Comparable> DoublyLinkedList<T> fromIterable(Iterable<T> arr) {
+    public static <T extends Comparable<T>> DoublyLinkedList<T> fromIterable(Iterable<T> arr) {
         DoublyLinkedList<T> list = new DoublyLinkedList<T>();
         for(T a: arr)
             list.add(a);
