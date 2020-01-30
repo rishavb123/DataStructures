@@ -74,7 +74,7 @@ public class Citizen implements Comparable<Citizen> {
 
     @Override
     public String toString() {
-        return getFirstName() + " " + getLastName() + " from " + getStreet();
+        return getFirstName() + " " + getLastName();// + " from " + getStreet();
     }
 
     /*

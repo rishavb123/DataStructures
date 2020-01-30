@@ -115,7 +115,7 @@ public class FedCensus {
             map.get(citizen.getOccupation().replaceAll("\t", "")).add(citizen.getFathersBirthplace());
         }
         for(String occupation: map.keySet()) {
-            System.out.println(occupation + ": " + map.get(occupation) + " " + occupation.length());
+            System.out.println(occupation + ": " + map.get(occupation));
         }
     }
 
@@ -165,6 +165,7 @@ public class FedCensus {
             
             ArrayList<Citizen> list = new ArrayList<>();
             for(String line: lines) {
+                line = line.replaceAll("\\*/12", "    ");
                 line = line.replaceAll("\\*", " ");
                 if(line.length() > 3 && line.substring(0, 3).matches("-?\\d+")) {
                     //                            first name                                        last name                                         street                                            streetNumber                                      relation                                           renting                                             propertyValue                                       gender                                              age                                                 maritalStatus                                       ageAtFirstMarriage                                  attendSchool                                        canRead                                             birthplace                                          fathersBirthplace                                   mothersBirthplace                                   mothersTongue                                       yearImmigrated                                      occupation                                          industry                                            remarks                 
