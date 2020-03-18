@@ -147,6 +147,7 @@ public class Main extends JPanel {
         resetButton.setBorder(border2);
 
         menuBar.add(resetButton);
+        menuBar.setLayout(new GridLayout(1, 0));
         
         panel.add(buttonPanel);
         panel.add(menuBar);
