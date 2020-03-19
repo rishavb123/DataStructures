@@ -39,7 +39,7 @@ public class Main extends JPanel {
 
         menuList = new ArrayList<>();
         String colors = "Blue\tRed\tBlack\tGreen\tYellow\tWhite";
-        menuList.add("Font\tArial\tTimes New Roman\tCourier New");
+        menuList.add("Font\tArial\tTimes New Roman\tCourier New\tKunstler Script\tTempus Sans ITC\tSimSun");
         menuList.add("Font Size\t12\t24\t36\t48");
         menuList.add("Font Style\tPlain\tBold\tItalic");
         menuList.add("Text Color\t" + colors);
