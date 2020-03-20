@@ -237,7 +237,8 @@ public class Main extends JPanel {
     }
 
     public static Color toColor(String color) {
-        if(color.equals("Random")) return new Color((float) Math.random(), (float) Math.random(), (float) Math.random());
+        if(color.equals("Random")) 
+            return new Color((float) Math.random(), (float) Math.random(), (float) Math.random());
         try {
             return (Color) Class.forName("java.awt.Color").getField(color.toUpperCase()).get(null);
         } catch (Exception e) {
