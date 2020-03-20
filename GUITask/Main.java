@@ -31,6 +31,8 @@ public class Main extends JPanel {
 
     private EmptyBorder border2 = new EmptyBorder(3,5,3,5);
 
+    private Font origFont;
+
     public Main() {
         frame = new JFrame("GUI Task");
         frame.setSize(1200, 800);
@@ -38,7 +40,7 @@ public class Main extends JPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         menuList = new ArrayList<>();
-        String colors = "Blue\tRed\tBlack\tGreen\tYellow\tWhite";
+        String colors = "Blue\tRed\tBlack\tGreen\tYellow\tWhite\tRandom";
         menuList.add("Font\tArial\tTimes New Roman\tCourier New\tKunstler Script\tTempus Sans ITC\tSimSun");
         menuList.add("Font Size\t12\t24\t36\t48");
         menuList.add("Font Style\tPlain\tBold\tItalic");
@@ -82,12 +84,16 @@ public class Main extends JPanel {
             });
             buttonPanel.add(button);
         }
-
+        boolean first = true;
         for(String menuInfo: menuList) {
             String[] arr = menuInfo.split("\t");
             JMenu menu = new JMenu(arr[0]);
             for(int i = 1; i < arr.length; i++) {
                 JMenuItem item = new JMenuItem(arr[i]);
+                if(first) {
+                    origFont = item.getFont();
+                    first = false;
+                } 
                 final int j = i;
                 item.addActionListener(new ActionListener() {
 
@@ -98,6 +104,8 @@ public class Main extends JPanel {
                     
                 });
                 Color color = toColor(arr[j]);
+                if(arr[0].equals("Font"))
+                    item.setFont(new Font(arr[j], item.getFont().getStyle(), item.getFont().getSize()));
                 item.setForeground(color == null? Color.BLACK : color);
                 menu.add(item);
             }
@@ -124,6 +132,20 @@ public class Main extends JPanel {
                 fontSize = 12;
                 fontStyle = 0;
                 updateFont();
+                for(Component component: buttonPanel.getComponents())
+                    component.setFont(origFont);
+                for(Component component: menuBar.getComponents()) {
+                    component.setFont(origFont);
+                    if(component instanceof JMenu && !((JMenu) component).getText().equals("Font")) {
+                        JMenu menu = (JMenu) component;
+                        for(int i = 0; i < menu.getItemCount(); i++) {
+                            JMenuItem item = menu.getItem(i);
+                            if(item != null)
+                                item.setFont(origFont);
+                        }
+                    }
+                }
+                resetButton.setFont(origFont);
                 textArea.setForeground(Color.BLACK);
                 textArea.setBackground(Color.WHITE);
                 textArea.setText("");
@@ -165,6 +187,20 @@ public class Main extends JPanel {
         switch(key) {
             case "Font":
                 fontName = val;
+                for(Component component: buttonPanel.getComponents())
+                    component.setFont(new Font(val, component.getFont().getStyle(), component.getFont().getSize()));
+                for(Component component: menuBar.getComponents()) {
+                    component.setFont(new Font(val, component.getFont().getStyle(), component.getFont().getSize()));
+                    if(component instanceof JMenu && !((JMenu) component).getText().equals("Font")) {
+                        JMenu menu = (JMenu) component;
+                        for(int i = 0; i < menu.getItemCount(); i++) {
+                            JMenuItem item = menu.getItem(i);
+                            if(item != null)
+                                item.setFont(new Font(val, item.getFont().getStyle(), item.getFont().getSize()));
+                        }
+                    }
+                }
+                resetButton.setFont(new Font(val, resetButton.getFont().getStyle(), resetButton.getFont().getSize()));
                 break;
             case "Font Size":
                 if(val.matches("\\d+"))
@@ -201,6 +237,7 @@ public class Main extends JPanel {
     }
 
     public static Color toColor(String color) {
+        if(color.equals("Random")) return new Color((float) Math.random(), (float) Math.random(), (float) Math.random());
         try {
             return (Color) Class.forName("java.awt.Color").getField(color.toUpperCase()).get(null);
         } catch (Exception e) {
