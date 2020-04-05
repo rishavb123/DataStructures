@@ -28,5 +28,30 @@ public class Runner {
         tree.remove((char) ((int)(Math.random() * 26) + 97));
 
         System.out.println(tree);
+
+        BinarySearchTree<Integer> nums = new BinarySearchTree<>();
+
+        for(int i = 0; i < 30; i++) nums.add((int)(Math.random() * 100 + 1));
+
+        System.out.println(nums.size());
+
+        System.out.println("ORIGINAL: \n" + nums);
+
+        BinarySearchTree<Integer> preorderNums = new BinarySearchTree<>();
+        BinarySearchTree<Integer> inorderNums = new BinarySearchTree<>();
+        BinarySearchTree<Integer> postorderNums = new BinarySearchTree<>();
+
+        for(Integer c: nums.preorderList()) preorderNums.add(c);
+        for(Integer c: nums.inorderList()) inorderNums.add(c);
+        for(Integer c: nums.postorderList()) postorderNums.add(c);   
+        
+        System.out.println("PREORDER NUMS: \n" + preorderNums);
+        System.out.println("INORDER NUMS: \n" + inorderNums);
+        System.out.println("POSTORDER NUMS: \n" + postorderNums);
+
+        System.out.println("PREORDER NUMS has the same ordering as the original. The INORDER NUMS' preorder is the same the inorder of the original and the POSTORDER NUMS' preorder is the same as the postorder on the original.");
+
+        /* Rotation Stuff */
+
     }
 }
