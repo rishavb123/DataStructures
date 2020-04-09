@@ -53,6 +53,28 @@ public class BinarySearchTree<E extends Comparable<E>> {
         return node;
     }
 
+    public boolean rotateLeft() {
+        if(root != null && root.getRight() != null) {
+            Node<E> oldRoot = root;
+            root = root.getRight();
+            oldRoot.setRight(root.getLeft());
+            root.setLeft(oldRoot);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean rotateRight() {
+        if(root != null && root.getLeft() != null) {
+            Node<E> oldRoot = root;
+            root = root.getLeft();
+            oldRoot.setLeft(root.getRight());
+            root.setRight(oldRoot);
+            return true;
+        }
+        return false;
+    }
+
     public E minValue() {
         Node<E> node;
         for(node = root; node.getLeft() != null; node = node.getLeft());
@@ -187,6 +209,10 @@ public class BinarySearchTree<E extends Comparable<E>> {
 
     public int size() {
         return size;
+    }
+
+    public Node<E> getRoot() {
+        return root;
     }
 
     public String toString() {

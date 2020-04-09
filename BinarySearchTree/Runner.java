@@ -49,9 +49,32 @@ public class Runner {
         System.out.println("INORDER NUMS: \n" + inorderNums);
         System.out.println("POSTORDER NUMS: \n" + postorderNums);
 
-        System.out.println("PREORDER NUMS has the same ordering as the original. The INORDER NUMS' preorder is the same the inorder of the original and the POSTORDER NUMS' preorder is the same as the postorder on the original.");
+        System.out.println("PREORDER NUMS has the same ordering as the original. The INORDER NUMS' preorder is the same the inorder of the original and the POSTORDER NUMS' preorder is the same as the postorder on the original. And the inorder is the same for all of them.");
 
         /* Rotation Stuff */
+        System.out.println("\nA: \n" + nums);
+
+        nums.rotateLeft();
+        System.out.println("B: \n" + nums);
+
+        nums.rotateRight();
+        System.out.println("C: \n" + nums);
+
+        nums.rotateLeft();
+        nums.rotateLeft();
+        System.out.println("D: \n" + nums);
+
+        nums.rotateRight();
+        nums.rotateRight();
+        nums.rotateRight();
+        System.out.println("E: \n" + nums);
+
+        while(nums.rotateLeft());
+        System.out.println("F: \n" + nums);
+
+        while(nums.rotateRight());
+        System.out.println("G: \n" + nums);
+
 
     }
 }
