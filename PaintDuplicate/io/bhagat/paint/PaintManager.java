@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JOptionPane;
+
 import io.bhagat.paint.items.DrawableItem;
 import io.bhagat.paint.modes.LineMode;
 import io.bhagat.paint.modes.PaintMode;
@@ -27,39 +29,33 @@ public class PaintManager {
         items = new ArrayList<>();
         params = new HashMap<>();
 
-        params.put("color", Color.BLACK);
-        params.put("mode", LineMode.instance);
-        params.put("thickness", 5);
-
         mouseListener = new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 ((PaintMode) params.get("mode")).mouseClicked(e);
-                PaintProgram.instance.repaint();
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
                 ((PaintMode) params.get("mode")).mousePressed(e);
-                PaintProgram.instance.repaint();
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 ((PaintMode) params.get("mode")).mouseReleased(e);
-                PaintProgram.instance.repaint();
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
                 ((PaintMode) params.get("mode")).mouseEntered(e);
-                PaintProgram.instance.repaint();
+                Point p = PaintProgram.instance.getMousePoint();
+                p.setGx(e.getX());
+                p.setGy(e.getY());
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 ((PaintMode) params.get("mode")).mouseExited(e);
-                PaintProgram.instance.repaint();
             }
             
         };
@@ -102,7 +98,10 @@ public class PaintManager {
     }
 
     public void setParam(Object key, Object value) {
-        params.put(key, value);
+        if(value == null)
+            JOptionPane.showMessageDialog(PaintProgram.instance, "Invalid Input", "Error", JOptionPane.ERROR_MESSAGE);
+        else
+            params.put(key, value);
     }
 
 }

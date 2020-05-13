@@ -1,6 +1,7 @@
 package io.bhagat.paint;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 public class Util {
 
@@ -19,6 +20,22 @@ public class Util {
             }
         }
         return null;
+    }
+
+    public static <T, E extends T> List<T> copyTo(List<E> inp, List<T> out) {
+        for(E i: inp) out.add((T) i);
+        return out;
+    }
+
+    public static String[] strRange(int min, int max, int step) {
+        int len = (int) Math.ceil((double)(max - min) / step);
+        String[] arr = new String[len];
+        int cur = min;
+        for(int i = 0; i < len; i++) {
+            arr[i] = Integer.toString(cur);
+            cur += step;
+        }
+        return arr;
     }
 
 }

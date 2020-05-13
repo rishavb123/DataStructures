@@ -13,7 +13,7 @@ public class Stroke extends DrawableItem {
     
     private List<Point> points;
     private Color color;
-    private int thickness;
+    private float thickness;
 
     public Stroke() {
         points = new ArrayList<>();
@@ -43,13 +43,23 @@ public class Stroke extends DrawableItem {
         points.add(new Point(x, y));
     } 
 
+    public void add(Point point) {
+        points.add(point);
+    }
+
+    @Override
     public void draw(Graphics2D g) {
         g.setStroke(new BasicStroke(thickness));
         g.setColor(color);
-        for(int i = 1; i < points.size(); i++) {
-            Point p1 = points.get(i - 1);
-            Point p2 = points.get(i);
-            g.drawLine(p1.getGx(), p1.getGy(), p2.getGx(), p2.getGy());
+        if(points.size() > 1)
+            for(int i = 1; i < points.size(); i++) {
+                Point p1 = points.get(i - 1);
+                Point p2 = points.get(i);
+                g.drawLine(p1.getGx(), p1.getGy(), p2.getGx(), p2.getGy());
+            }
+        else if(points.size() == 1){
+            Point p = points.get(0);
+            g.fillOval(p.getGx(), p.getGy(), (int)thickness, (int)thickness);
         }
     }
     
@@ -59,6 +69,10 @@ public class Stroke extends DrawableItem {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public List<Point> getPoints() {
+        return points;
     }
 
 }
