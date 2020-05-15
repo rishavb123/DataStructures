@@ -1,27 +1,27 @@
 package io.bhagat.paint.modes;
 
+import io.bhagat.paint.PaintManager;
+import io.bhagat.paint.items.shapes.Line;
+
 import java.awt.Color;
 import java.awt.event.MouseEvent;
-
-import io.bhagat.paint.PaintManager;
-import io.bhagat.paint.items.Stroke;
 
 public class LineMode extends PaintMode {
 
     public static LineMode instance = new LineMode();
 
-    protected Stroke curStroke;
+    private Line curLine;
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        curStroke.add(e.getX(), e.getY());
+        curLine.setWidth(e.getX() - curLine.getX());
+        curLine.setHeight(e.getY() - curLine.getY());
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        curStroke = new Stroke((Color) PaintManager.instance.getParam("color"), (int) PaintManager.instance.getParam("thickness"));
-        curStroke.add(e.getX(), e.getY());
-        PaintManager.instance.add(curStroke);
+        curLine = new Line(e.getX(), e.getY(), 0, 0, (Color) PaintManager.instance.getParam("color"), (int) PaintManager.instance.getParam("thickness"));
+        PaintManager.instance.add(curLine);
     }
-    
+
 }
