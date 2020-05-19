@@ -3,10 +3,11 @@ package io.bhagat.paint;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import javax.swing.JOptionPane;
 
@@ -17,15 +18,20 @@ public class PaintManager {
 
     public static PaintManager instance = new PaintManager();
 
-    private List<DrawableItem> items;
+    private Stack<DrawableItem> items;
+    private Stack<DrawableItem> removedItems;
     private Map<Object, Object> params;
 
     private MouseListener mouseListener;
     private MouseMotionListener mouseMotionListener;
+    private KeyListener keyListener;
 
     public PaintManager() {
-        items = new ArrayList<>();
+        items = new Stack<>();
+        removedItems = new Stack<>();
         params = new HashMap<>();
+
+        params.put("showinstructions", true);
 
         mouseListener = new MouseListener() {
             @Override
@@ -72,11 +78,50 @@ public class PaintManager {
             }
 
         };
+        keyListener = new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+				((PaintMode) params.get("mode")).keyTyped(e);
+                PaintProgram.instance.repaint();
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				((PaintMode) params.get("mode")).keyPressed(e);
+                PaintProgram.instance.repaint();
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				((PaintMode) params.get("mode")).keyReleased(e);
+                PaintProgram.instance.repaint();
+			}
+
+        };
 
     }
         
     public void add(DrawableItem item) {
-        items.add(item);
+        items.push(item);
+        if(removedItems.size() > 0) removedItems.clear();
+    }
+
+    public void undo() {
+        if(items.size() > 0) {
+            removedItems.push(items.pop());
+        }
+    }
+
+    public void clear() {
+        items.clear();
+        removedItems.clear();
+    }
+
+    public void redo() {
+        if(removedItems.size() > 0) {
+            items.push(removedItems.pop());
+        }
     }
 
     public MouseListener getMouseListener() {
@@ -87,7 +132,11 @@ public class PaintManager {
         return mouseMotionListener;
     }
 
-    public List<DrawableItem> getItems() {
+    public KeyListener getKeyListener() {
+        return keyListener;
+    }
+
+    public Stack<DrawableItem> getItems() {
         return items;
     }
 

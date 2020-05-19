@@ -23,5 +23,10 @@ public class FreeStrokeMode extends PaintMode {
         curStroke.add(e.getX(), e.getY());
         PaintManager.instance.add(curStroke);
     }
+
+    @Override
+    public String toString() {
+        return "Draw whatever you want here. To mess with the color, thickness, rotations, and more check the menus above and scrollbars below.";
+    }
     
 }

@@ -11,6 +11,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 
+import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -18,6 +19,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import io.bhagat.paint.items.DrawableItem;
 
@@ -34,6 +37,7 @@ public class PaintProgram extends JPanel {
     private JPanel sliderPanel;
     private JPanel labelsPanel;
     private JPanel textFieldsPanel;
+    private JLabel instructions;
 
     private int numOfSliderParams = SliderDefinition.values().length;
 
@@ -50,6 +54,7 @@ public class PaintProgram extends JPanel {
         frame.add(this);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        instructions = new JLabel();
         menuBar = new JMenuBar();
 
         sliderPanel = new JPanel(new GridLayout(numOfSliderParams, 1));
@@ -77,17 +82,31 @@ public class PaintProgram extends JPanel {
                 });
                 menu.add(item);
             }
-            JTextField textField = new JTextField("");
-            textField.addActionListener(new ActionListener() {
+            
+            if(menuInfo.getName().equals("Color")) {
+                JColorChooser colorChooser = new JColorChooser();
+                colorChooser.getSelectionModel().addChangeListener(new ChangeListener(){
+                
+                    @Override
+                    public void stateChanged(ChangeEvent e) {
+                         pm.setParam("color", colorChooser.getColor());
+                    }
 
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    menuInfo.callback(e.getActionCommand());
-                    textField.setText("");
-                }
+                });
+                menu.add(colorChooser);
+            } else {
+                JTextField textField = new JTextField("");
+                textField.addActionListener(new ActionListener() {
 
-            });
-            menu.add(textField);
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        menuInfo.callback(e.getActionCommand());
+                        textField.setText("");
+                    }
+
+                });
+                menu.add(textField);
+            }
             menuBar.add(menu);
         }
 
@@ -134,6 +153,8 @@ public class PaintProgram extends JPanel {
             sliderPanel.add(scrollBar);
         }
 
+        setFocusable(true);
+        addKeyListener(pm.getKeyListener());
         addMouseListener(pm.getMouseListener());
         addMouseMotionListener(pm.getMouseMotionListener());
 
@@ -152,14 +173,24 @@ public class PaintProgram extends JPanel {
 
         mousePosition = new Point(0, 0);
 
+        add(instructions, BorderLayout.SOUTH);
+
         new Thread(new Runnable() {
 
             @Override
             public void run() {
                 long lastTime = Instant.now().toEpochMilli();
                 while (true) {
-
                     long curTime = Instant.now().toEpochMilli();
+
+                    instructions.setText(pm.getParam("mode").toString());
+                    Color backgroundColor = (Color) pm.getParam("backgroundcolor");
+                    Color complement = new Color(255 - backgroundColor.getRed(),
+                        255 - backgroundColor.getGreen(),
+                        255 - backgroundColor.getBlue());
+                    instructions.setForeground(complement);
+
+                    instructions.setVisible((boolean) pm.getParam("showinstructions"));
 
                     if((boolean) pm.getParam("playing"))
                         for(DrawableItem item: pm.getItems())

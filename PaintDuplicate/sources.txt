@@ -1,9 +1,11 @@
+C:\Projects\UniversalProjects\PaintDuplicate\Test.java
 C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\MenuDefinition.java
 C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\PaintManager.java
 C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\PaintProgram.java
 C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\Point.java
 C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\SliderDefinition.java
 C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\Util.java
+C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\items\Curve.java
 C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\items\DrawableItem.java
 C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\items\EraserMark.java
 C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\items\FloatingStroke.java
@@ -11,12 +13,15 @@ C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\items\JitteringStro
 C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\items\Stroke.java
 C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\items\shapes\Block.java
 C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\items\shapes\Line.java
+C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\items\shapes\Oval.java
 C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\items\shapes\Shape.java
+C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\modes\CurveMode.java
 C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\modes\EraserMode.java
 C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\modes\FloatingMode.java
 C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\modes\FreeStrokeMode.java
 C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\modes\JitteringMode.java
 C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\modes\LineMode.java
+C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\modes\OvalMode.java
 C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\modes\PaintMode.java
 C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\modes\RectangleMode.java
 C:\Projects\UniversalProjects\PaintDuplicate\io\bhagat\paint\modes\SnowflakeMode.java

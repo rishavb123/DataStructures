@@ -29,7 +29,7 @@ public enum MenuDefinition {
         }
 
     }),
-    ConfigurationsMenu("Play Animations", new String[] {"Play Animations", "Pause Animations", "Clear"}, new MenuSelectCallback() {
+    ConfigurationsMenu("Play Animations", new String[] {"Play Animations", "Pause Animations", "Toggle Instructions", "Undo", "Redo", "Clear"}, new MenuSelectCallback() {
 
         @Override
         public void call(String val) {
@@ -40,8 +40,17 @@ public enum MenuDefinition {
                 case "Pause Animations":
                     PaintManager.instance.setParam("playing", false);
                     break;
+                case "Toggle Instructions":
+                    PaintManager.instance.setParam("showinstructions", !((boolean) PaintManager.instance.getParam("showinstructions")));
+                    break;
+                case "Undo":
+                    PaintManager.instance.undo();
+                    break;
+                case "Redo":
+                    PaintManager.instance.redo();
+                    break;
                 case "Clear":
-                    PaintManager.instance.getItems().clear();
+                    PaintManager.instance.clear();
                     break;
             }
         }
